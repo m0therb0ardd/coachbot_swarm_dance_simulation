@@ -1,7 +1,7 @@
 {
     "NUM_RUNS": 1,
     "DEFAULT_USER": "translate_circle_left.py",
-    "DEFAULT_INIT": "init_pose_circle.csv",
+    "DEFAULT_INIT": "init_pose.csv",
     "DEFAULT_CONFIG": "config.json",
     "DEFAULT_TRIALS": 1
   }
