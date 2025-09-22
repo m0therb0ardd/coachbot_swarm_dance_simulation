@@ -1,0 +1,8 @@
+{
+    "NUM_RUNS": 1,
+    "DEFAULT_USER": "flock_left.py",
+    "DEFAULT_INIT": "init_pose_circle.csv",
+    "DEFAULT_CONFIG": "config.json",
+    "DEFAULT_TRIALS": 1
+  }
+  
