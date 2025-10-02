@@ -16,6 +16,16 @@ class GUI:
         self.radius = 5
         self.arrow_width, self.arrow_height = self.radius / 3, self.radius / 2
         self.x_fac, self.y_fac = self.screen_length / self.arena_length, self.screen_height / self.arena_height
+
+        # --- dancer no-go circle (meters) ---
+        feet = 0.3048
+        obst_diam_ft = config_data.get("OBST_DIAM_FT", 1.0)
+        obst_margin  = config_data.get("OBST_MARGIN_M", 0.03)
+        self.obst_cx = config_data.get("OBST_CX", -0.1)
+        self.obst_cy = config_data.get("OBST_CY",  0.475)
+        self.obst_r  = 0.5 * obst_diam_ft * feet     # hard disk radius
+        self.obst_safe = self.obst_r + obst_margin   # soft bubble radius
+
         self.frame_num = 0
         if "VIDEO_NAME" in config_data:
             self.video_folder = config_data["VIDEO_NAME"] + "_" + str(trial_number)
@@ -44,12 +54,33 @@ class GUI:
             pass
             # convert folder and delete
         pygame.quit()
+
+    def draw_world_circle(self, center_xy_m, radius_m, color, width=2):
+        """
+        Draw a circle defined in world meters even if the screen has different
+        x/y scales (uses an ellipse with rx != ry when needed).
+        """
+        cx, cy = center_xy_m
+        sx, sy = self.to_pygame((cx, cy))  # screen center (px)
+        rx = int(radius_m * self.x_fac)
+        ry = int(radius_m * self.y_fac)
+        # Build a rect centered at (sx, sy)
+        rect = pygame.Rect(0, 0, 2*rx, 2*ry)
+        rect.center = (int(sx), int(sy))
+        pygame.draw.ellipse(self.window, color, rect, width)
+
     
     def update(self, state, real_time, sim_time, rtf):
         '''
         Update the screen
         '''
         self.window.fill((0, 0, 0)) # Clear the screen before redrawing (color it black)
+        # Draw dancer no-go zone overlay (soft bubble + hard disk)
+        self.draw_world_circle((self.obst_cx, self.obst_cy), self.obst_safe, (255, 200, 0), 2)  # amber
+        self.draw_world_circle((self.obst_cx, self.obst_cy), self.obst_r,    (255,   0,  0), 2)  # red
+
+
+
 
         # Draw robots
         for robot in state:
