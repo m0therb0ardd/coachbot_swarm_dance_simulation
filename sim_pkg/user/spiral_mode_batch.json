@@ -1,0 +1,8 @@
+{
+    "NUM_RUNS": 1,
+    "DEFAULT_USER": "spiral_mode.py",
+    "DEFAULT_INIT": "init_pose_spiral.csv",
+    "DEFAULT_CONFIG": "config.json",
+    "DEFAULT_TRIALS": 1
+  }
+  

@@ -8,7 +8,8 @@ CX = (X_MIN + X_MAX) / 2.0    # -0.1
 CY = (Y_MIN + Y_MAX) / 2.0    #  0.475
 
 # ===== Dancer no-go circle (1-foot DIAMETER) =====
-FEET = 0.3048
+# FEET = 0.3048
+FEET = 1.2
 OBST_DIAM_FT = 1.0
 OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET   # 0.1524 m
 OBST_MARGIN  = 0.03                        # small extra collar (tweakable)

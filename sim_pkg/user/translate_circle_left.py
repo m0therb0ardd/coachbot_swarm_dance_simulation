@@ -226,6 +226,10 @@
 #  - the ring edge is within STOP_MARGIN of the left wall, OR
 #  - the ring is within SAFE_BUBBLE of the dancer circle.
 # Uses a shared field center and sim clock so bots stay in formation.
+# sim_pkg/user/translate_circle_left_with_boundaries.py
+# Keep a rigid 5-robot ring and translate it screen-left with boundary enforcement
+# sim_pkg/user/translate_circle_left_smooth.py
+# Smooth version with boundary enforcement
 
 import math, struct
 
@@ -234,17 +238,17 @@ X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
 CX, CY = (-0.1, 0.475)
 
-# ===== Dancer no-go circle (1-foot DIAMETER) =====
+# ===== Dancer no-go circle =====
 FEET = 0.3048
 OBST_DIAM_FT = 1.0
-OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET   # 0.1524 m
-OBST_MARGIN  = 0.03                        # small collar
-SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN   # ~0.1824 m
+OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET
+OBST_MARGIN  = 0.03
+SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN
 
 # ===== Translation plan =====
-MOVE_DIR    = 1        # -1 = screen-left
-SHIFT_RATE  = 0.18      # m/s center velocity
-STOP_MARGIN = 0.08      # keep ring this far from wall at stop
+MOVE_DIR    = -1        # -1 = screen-left, +1 = screen-right
+SHIFT_RATE  = 0.18     # m/s center velocity
+STOP_MARGIN = 0.08     # keep ring this far from wall at stop
 
 # ===== Drive control =====
 MAX_WHEEL = 40
@@ -254,34 +258,68 @@ FWD_SLOW  = 0.30
 EPS       = 1e-3
 
 # ===== Rigid-body locking gains =====
-KX = 1.2     # x gain
-KY = 2.0     # y gain (a bit stronger to hold "height")
-KR = 2.6     # lock to initial offset (radius/angle)
+KX = 1.2
+KY = 2.0
+KR = 2.6
 
 def clamp(v, lo, hi): return lo if v < lo else hi if v > hi else v
+
 def wrap_angle(a):
     while a >  math.pi: a -= 2*math.pi
     while a <= -math.pi: a += 2*math.pi
     return a
+
 def safe_pose(robot):
     p = robot.get_pose()
     if isinstance(p,(list,tuple)) and len(p)>=3:
         return float(p[0]), float(p[1]), float(p[2])
     return None
+
 def get_id(robot):
     vid_attr = getattr(robot, "virtual_id", None)
     return vid_attr() if callable(vid_attr) else int(vid_attr or 0)
 
+def soft_boundary_force(x, y, max_force=0.5, boundary_margin=0.1):
+    """Apply soft repulsive force near boundaries instead of hard stops"""
+    fx, fy = 0.0, 0.0
+    
+    # X boundaries
+    if x < X_MIN + boundary_margin:
+        strength = 1.0 - (x - X_MIN) / boundary_margin
+        fx += max_force * strength
+    elif x > X_MAX - boundary_margin:
+        strength = 1.0 - (X_MAX - x) / boundary_margin  
+        fx -= max_force * strength
+        
+    # Y boundaries  
+    if y < Y_MIN + boundary_margin:
+        strength = 1.0 - (y - Y_MIN) / boundary_margin
+        fy += max_force * strength
+    elif y > Y_MAX - boundary_margin:
+        strength = 1.0 - (Y_MAX - y) / boundary_margin
+        fy -= max_force * strength
+        
+    return fx, fy
+
+def is_critical_boundary(x, y, critical_margin=0.03):
+    """Only emergency stop when dangerously close"""
+    return (x < X_MIN + critical_margin or x > X_MAX - critical_margin or 
+            y < Y_MIN + critical_margin or y > Y_MAX - critical_margin)
+
 def usr(robot):
     robot.set_led(0, 180, 180)  # cyan
     my_id = get_id(robot)
+    
+    print(f"Robot {my_id} starting - Smooth boundary enforcement")
 
-    # Per-robot state (locked once)
-    rel_off = None   # (x - CX, y - CY) at lock time
-    R_form  = None   # measured ring radius
-    s_stop  = None   # allowed total shift
-    t0      = None   # start time
+    # Per-robot state
+    rel_off = None
+    R_form  = None
+    s_stop  = None
+    t0      = None
     started = False
+    emergency_stop = False
+    last_print_time = 0
 
     # slight spawn settle
     robot.delay(200)
@@ -294,29 +332,45 @@ def usr(robot):
             continue
         x, y, th = pose
 
+        # CRITICAL BOUNDARY CHECK - Only emergency stop when absolutely necessary
+        if is_critical_boundary(x, y, 0.02):
+            if not emergency_stop:
+                print(f"ROBOT {my_id} CRITICAL STOP! Position: [{x:.3f}, {y:.3f}]")
+                emergency_stop = True
+                robot.set_led(255, 50, 0)  # Orange = critical stop
+            
+            robot.set_vel(0, 0)
+            robot.delay(20)
+            continue
+        elif emergency_stop:
+            # Recovered from critical boundary
+            emergency_stop = False
+            robot.set_led(0, 180, 180)
+            print(f"Robot {my_id} recovered from critical boundary")
+
         # Lock initial offset & compute stop distance once
         if rel_off is None:
             rel_off = (x - CX, y - CY)
             R_form  = math.hypot(*rel_off)
 
-            # Wall-limited shift for moving LEFT
-            s_wall = max(0.0, CX - (X_MIN + STOP_MARGIN + R_form))
-            # Dancer bubble-limited shift
+            # Wall-limited shift with reasonable safety margin
+            safety_buffer = 0.05  # Reduced from 0.1 for smoother movement
+            if MOVE_DIR < 0:  # moving left
+                s_wall = max(0.0, CX - (X_MIN + STOP_MARGIN + safety_buffer + R_form))
+            else:  # moving right
+                s_wall = max(0.0, (X_MAX - STOP_MARGIN - safety_buffer - R_form) - CX)
+                
             s_obst = max(0.0, R_form - SAFE_BUBBLE)
             s_stop = min(s_wall, s_obst)
 
-            # synced start (half-second boundary)
+            # Use full rate for smooth movement
+            sim_safe_rate = SHIFT_RATE  # 100% of original speed
+
+            # synced start
             now = robot.get_clock()
             t0 = math.floor(now * 2.0) / 2.0 + 0.5
 
-            robot.log([
-                "lock",
-                f"id={my_id}",
-                f"R={R_form:.3f}",
-                f"s_wall={s_wall:.3f}",
-                f"s_obst={s_obst:.3f}",
-                f"s_stop={s_stop:.3f}"
-            ])
+            print(f"Robot {my_id} locked: R={R_form:.3f}, s_stop={s_stop:.3f}")
 
         # Wait for the shared start time
         t = robot.get_clock()
@@ -326,13 +380,19 @@ def usr(robot):
                 robot.delay(10)
                 continue
             started = True
+            print(f"Robot {my_id} started moving")
 
-        # Planned center shift
+        # Planned center shift with full speed
         s = min(max(0.0, t - t0) * SHIFT_RATE, s_stop)
 
         # Moving center and rigid target for me
         Cx = CX + MOVE_DIR * s
         Cy = CY
+        
+        # SOFTER center boundaries
+        Cx = max(X_MIN + R_form + 0.08, min(X_MAX - R_form - 0.08, Cx))
+        Cy = max(Y_MIN + R_form + 0.08, min(Y_MAX - R_form - 0.08, Cy))
+        
         tx = Cx + rel_off[0]
         ty = Cy + rel_off[1]
 
@@ -341,30 +401,62 @@ def usr(robot):
         vx = KX * ex
         vy = KY * ey
 
-        # Feed-forward so everyone "surfs" left with the center
+        # Feed-forward at full rate
         vx += MOVE_DIR * SHIFT_RATE
 
-        # Radial lock to initial offset around the *moving* center
+        # Radial lock to initial offset
         rx, ry = x - Cx, y - Cy
         vx += KR * (rel_off[0] - rx)
         vy += KR * (rel_off[1] - ry)
 
+        # SOFT BOUNDARY FORCE - instead of hard stops
+        boundary_fx, boundary_fy = soft_boundary_force(x, y, max_force=0.3, boundary_margin=0.08)
+        vx += boundary_fx
+        vy += boundary_fy
+        
+        # Visual feedback for boundary proximity (no stopping)
+        boundary_warning = is_critical_boundary(x, y, 0.05)  # Wider margin for warning
+        if boundary_warning:
+            robot.set_led(255, 150, 0)  # Yellow = boundary warning
+        else:
+            robot.set_led(0, 180, 180)  # Cyan = normal
+
+        # Less frequent printing for smoother performance
+        current_time = robot.get_clock()
+        if current_time - last_print_time > 3.0:  # Every 3 seconds
+            print(f"Robot {my_id} at [{x:.3f}, {y:.3f}], s={s:.3f}")
+            last_print_time = current_time
+
         # Finished? stop & hold
         if abs(s - s_stop) < 1e-6 and (abs(ex) + abs(ey) < 0.01):
             robot.set_vel(0, 0)
+            robot.set_led(0, 255, 0)  # Green = completed safely
             robot.delay()
             continue
 
-        # Map (vx,vy) → wheels
+        # Map (vx,vy) → wheels with SMOOTHER settings
         if abs(vx) + abs(vy) < EPS:
             robot.set_vel(0, 0)
         else:
             hdg = math.atan2(vy, vx)
             err = wrap_angle(hdg - th)
-            fwd  = FWD_FAST if abs(err) < 0.9 else FWD_SLOW
-            turn = clamp(TURN_K * err, -1.0, 1.0)
-            left  = clamp(int(MAX_WHEEL * (fwd - 0.8*turn)), -MAX_WHEEL, MAX_WHEEL)
-            right = clamp(int(MAX_WHEEL * (fwd + 0.8*turn)), -MAX_WHEEL, MAX_WHEEL)
+            
+            # Smoother forward speed selection
+            abs_err = abs(err)
+            if abs_err < 0.5:
+                fwd = FWD_FAST  # Fast when well-aligned
+            elif abs_err < 1.2:
+                fwd = FWD_FAST * 0.7  # Medium when somewhat misaligned  
+            else:
+                fwd = FWD_SLOW  # Slow when very misaligned
+                
+            # Smoother turning with less aggressive response
+            turn = clamp(TURN_K * err, -1.5, 1.5)
+            
+            # Use 90% of max wheel for smoothness
+            left  = clamp(int(MAX_WHEEL * 0.9 * (fwd - 0.8 * turn)), -MAX_WHEEL, MAX_WHEEL)
+            right = clamp(int(MAX_WHEEL * 0.9 * (fwd + 0.8 * turn)), -MAX_WHEEL, MAX_WHEEL)
+            
             robot.set_vel(left, right)
 
-        robot.delay(20)  # ~20 ms
+        robot.delay(20)
