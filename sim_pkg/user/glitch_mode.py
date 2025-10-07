@@ -1138,14 +1138,14 @@ CRIT_MARGIN     = 0.02
 SOFT_MAX_FORCE  = 0.35
 
 # --- jittery repulsion params ---
-REPULSE_RADIUS  = 0.35
-REPULSE_GAIN    = 0.60
-NOISE_GAIN      = 0.25
+REPULSE_RADIUS  = 0.75 # was .35
+REPULSE_GAIN    = 0.12 
+NOISE_GAIN      = 0.12 #was .25
 FWD_GAIN        = 0.95
 LEFT_BIAS_VX    = 0.00  # set to -0.06 for slow drift left
 
 # dancer no-go circle (meters)
-FEET = 0.3048
+FEET = 0.6048
 OBST_DIAM_FT = 1.0
 OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET   # ~0.1524
 OBST_MARGIN  = 0.03

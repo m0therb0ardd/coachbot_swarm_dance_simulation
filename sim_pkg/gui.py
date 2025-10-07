@@ -18,7 +18,7 @@ class GUI:
         self.x_fac, self.y_fac = self.screen_length / self.arena_length, self.screen_height / self.arena_height
 
         # --- dancer no-go circle (meters) ---
-        feet = 0.3048
+        feet = 0.6048
         obst_diam_ft = config_data.get("OBST_DIAM_FT", 1.0)
         obst_margin  = config_data.get("OBST_MARGIN_M", 0.03)
         self.obst_cx = config_data.get("OBST_CX", -0.1)

@@ -1,0 +1,8 @@
+{
+    "NUM_RUNS": 1,
+    "DEFAULT_USER": "glitch_to_target.py",
+    "DEFAULT_INIT": "init_pose.csv",
+    "DEFAULT_CONFIG": "config.json",
+    "DEFAULT_TRIALS": 1
+  }
+  
