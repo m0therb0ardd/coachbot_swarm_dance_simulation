@@ -1,6 +1,6 @@
 {
     "NUM_RUNS": 1,
-    "DEFAULT_USER": "flocking.py",
+    "DEFAULT_USER": "usr_code_performance_sim.py",
     "DEFAULT_INIT": "init_pose.csv",
     "DEFAULT_CONFIG": "config.json",
     "DEFAULT_TRIALS": 1

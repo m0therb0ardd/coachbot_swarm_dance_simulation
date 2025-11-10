@@ -1,6 +1,7 @@
 import math
 import struct
 
+
 def usr(robot):
     robot.delay(3000)
     # log = open("experiment_log.txt", "w")

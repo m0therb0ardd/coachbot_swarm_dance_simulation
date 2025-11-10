@@ -8,7 +8,7 @@
     "TIME_ASYNC": 0,
     "REAL_TIME_FACTOR": 3.0,
     "SIM_TIME_STEP": 0.05,
-    "SIM_TIME": 120,
+    "SIM_TIME": 200,
     "WIDTH": 10, 
     "LENGTH": 10, 
     "USE_VIS": 1
