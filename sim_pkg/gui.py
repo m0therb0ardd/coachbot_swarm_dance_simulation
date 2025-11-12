@@ -26,6 +26,14 @@ class GUI:
         self.obst_r  = 0.5 * obst_diam_ft * feet     # hard disk radius
         self.obst_safe = self.obst_r + obst_margin   # soft bubble radius
 
+        # --- play space bounds (meters) ---
+        # Defaults match the spec: x in [-1.2, 1.0], y in [-1.4, 2.35]
+        self.x_min = config_data.get("X_MIN_M", -1.2)
+        self.x_max = config_data.get("X_MAX_M",  1.0)
+        self.y_min = config_data.get("Y_MIN_M", -1.4)
+        self.y_max = config_data.get("Y_MAX_M",  2.35)
+
+
         self.frame_num = 0
         if "VIDEO_NAME" in config_data:
             self.video_folder = config_data["VIDEO_NAME"] + "_" + str(trial_number)
@@ -69,12 +77,37 @@ class GUI:
         rect.center = (int(sx), int(sy))
         pygame.draw.ellipse(self.window, color, rect, width)
 
+    def draw_play_space(self, color=(80, 80, 80), width=2):
+        """
+        Draw the play-space rectangle using world-coordinate bounds:
+        x in [x_min, x_max], y in [y_min, y_max].
+        """
+        # Convert world corners to screen coordinates
+        bl = self.to_pygame((self.x_min, self.y_min))  # bottom-left (world)
+        tr = self.to_pygame((self.x_max, self.y_max))  # top-right (world)
+
+        # Because pygame's y-axis is downward, figure out actual top/bottom in pixels
+        left   = min(bl[0], tr[0])
+        right  = max(bl[0], tr[0])
+        top    = min(bl[1], tr[1])
+        bottom = max(bl[1], tr[1])
+
+        rect = pygame.Rect(int(left), int(top),
+                           int(right - left), int(bottom - top))
+
+        pygame.draw.rect(self.window, color, rect, width)
+
+
     
     def update(self, state, real_time, sim_time, rtf):
         '''
         Update the screen
         '''
         self.window.fill((0, 0, 0)) # Clear the screen before redrawing (color it black)
+
+        # Draw play space rectangle (arena bounds)
+        self.draw_play_space()
+
         # Draw dancer no-go zone overlay (soft bubble + hard disk)
         self.draw_world_circle((self.obst_cx, self.obst_cy), self.obst_safe, (255, 200, 0), 2)  # amber
         self.draw_world_circle((self.obst_cx, self.obst_cy), self.obst_r,    (255,   0,  0), 2)  # red

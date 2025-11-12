@@ -231,6 +231,13 @@
 #             # simulator expects print(), keep it light
 #             print(s)
 #         logw("FLOAT(SIM): I am robot %s" % str(rid))
+
+#     # --- logging setup ---
+#     if sim_mode:
+#         def logw(s):
+#             # simulator expects print(), keep it light
+#             print(s)
+#         logw("FLOAT(SIM): I am robot %s" % str(rid))
 #     else:
 #         log_main = open("experiment_log.txt", "a")
 #         def logw(s):
