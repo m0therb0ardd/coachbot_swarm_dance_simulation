@@ -97,6 +97,24 @@ class GUI:
 
         pygame.draw.rect(self.window, color, rect, width)
 
+    def draw_axes_overlay(self):
+        """
+        Draw tiny world axes at the center so we can visually remember:
+        +x = right, +y = up.
+        """
+        origin = self.to_pygame((0.0, 0.0))
+        ox, oy = int(origin[0]), int(origin[1])
+        length = 40  # pixels
+
+        # +x axis (right) in RED
+        pygame.draw.line(self.window, (255, 0, 0),
+                         (ox, oy), (ox + length, oy), 2)
+
+        # +y axis (up) in GREEN
+        pygame.draw.line(self.window, (0, 255, 0),
+                         (ox, oy), (ox, oy - length), 2)
+
+
 
     
     def update(self, state, real_time, sim_time, rtf):
@@ -107,6 +125,8 @@ class GUI:
 
         # Draw play space rectangle (arena bounds)
         self.draw_play_space()
+
+        self.draw_axes_overlay()
 
         # Draw dancer no-go zone overlay (soft bubble + hard disk)
         self.draw_world_circle((self.obst_cx, self.obst_cy), self.obst_safe, (255, 200, 0), 2)  # amber
