@@ -973,57 +973,101 @@ def usr(robot):
         radial = clamp(K_R * (R_TARGET - r), -RADIAL_CLAMP, RADIAL_CLAMP)
         vx += radial * urx; vy += radial * ury
 
-        # ---- VELOCITY-BASED SPACING ----
+        # # ---- VELOCITY-BASED SPACING ----
+        # if len(nbrs) > 0:
+        #     # Calculate angular positions of all neighbors
+        #     neighbor_angles = []
+        #     for _, (nx, ny, nth, tlast) in nbrs.items():
+        #         ntheta = math.atan2(ny - CY, nx - CX)
+        #         neighbor_angles.append(ntheta)
+            
+        #     # Find closest neighbors in front and behind
+        #     front_gap = float('inf')
+        #     behind_gap = float('inf')
+            
+        #     for ntheta in neighbor_angles:
+        #         angular_diff = wrap(ntheta - theta)
+                
+        #         # For CCW direction, positive diff is "in front", negative is "behind"
+        #         if DIRECTION > 0:  # CCW
+        #             if angular_diff > 0 and angular_diff < front_gap:
+        #                 front_gap = angular_diff
+        #             elif angular_diff < 0 and -angular_diff < behind_gap:
+        #                 behind_gap = -angular_diff
+        #         else:  # CW (reverse the logic)
+        #             if angular_diff < 0 and -angular_diff < front_gap:
+        #                 front_gap = -angular_diff
+        #             elif angular_diff > 0 and angular_diff < behind_gap:
+        #                 behind_gap = angular_diff
+            
+        #     # If we found gaps, adjust velocity
+        #     if front_gap < float('inf') and behind_gap < float('inf'):
+        #         # Calculate velocity adjustment
+        #         total_gap = front_gap + behind_gap
+        #         if total_gap > 0:
+        #             # Normalize by ideal spacing
+        #             front_ratio = front_gap / IDEAL_ANGULAR_SEP
+                    
+        #             # Speed up if front gap is too large, slow down if too small
+        #             velocity_adjustment = ANGULAR_VELOCITY_GAIN * (front_ratio - 1.0)
+        #             velocity_adjustment = clamp(velocity_adjustment, -MAX_VELOCITY_ADJUSTMENT, MAX_VELOCITY_ADJUSTMENT)
+                    
+        #             # Apply adjustment to tangential velocity
+        #             adjusted_v_tangent = base_v_tangent + velocity_adjustment
+        #             vx = adjusted_v_tangent * utx
+        #             vy = adjusted_v_tangent * uty
+                    
+        #             # Re-apply radial component
+        #             vx += radial * urx
+        #             vy += radial * ury
+                    
+        #             # Debug print
+        #             if now - last_print > PRINT_PERIOD:
+        #                 print(f"Bot {rid}: front_gap={front_gap:.3f}, behind_gap={behind_gap:.3f}, adj={velocity_adjustment:.3f}")
+
+        # Replace the current velocity-based spacing section with:
         if len(nbrs) > 0:
-            # Calculate angular positions of all neighbors
             neighbor_angles = []
             for _, (nx, ny, nth, tlast) in nbrs.items():
                 ntheta = math.atan2(ny - CY, nx - CX)
                 neighbor_angles.append(ntheta)
             
-            # Find closest neighbors in front and behind
-            front_gap = float('inf')
-            behind_gap = float('inf')
-            
+            # Find gaps to closest neighbors on both sides
+            gaps = []
             for ntheta in neighbor_angles:
-                angular_diff = wrap(ntheta - theta)
-                
-                # For CCW direction, positive diff is "in front", negative is "behind"
-                if DIRECTION > 0:  # CCW
-                    if angular_diff > 0 and angular_diff < front_gap:
-                        front_gap = angular_diff
-                    elif angular_diff < 0 and -angular_diff < behind_gap:
-                        behind_gap = -angular_diff
-                else:  # CW (reverse the logic)
-                    if angular_diff < 0 and -angular_diff < front_gap:
-                        front_gap = -angular_diff
-                    elif angular_diff > 0 and angular_diff < behind_gap:
-                        behind_gap = angular_diff
+                gap = wrap(ntheta - theta)
+                gaps.append(gap)
             
-            # If we found gaps, adjust velocity
-            if front_gap < float('inf') and behind_gap < float('inf'):
-                # Calculate velocity adjustment
-                total_gap = front_gap + behind_gap
-                if total_gap > 0:
-                    # Normalize by ideal spacing
-                    front_ratio = front_gap / IDEAL_ANGULAR_SEP
-                    
-                    # Speed up if front gap is too large, slow down if too small
-                    velocity_adjustment = ANGULAR_VELOCITY_GAIN * (front_ratio - 1.0)
-                    velocity_adjustment = clamp(velocity_adjustment, -MAX_VELOCITY_ADJUSTMENT, MAX_VELOCITY_ADJUSTMENT)
-                    
-                    # Apply adjustment to tangential velocity
-                    adjusted_v_tangent = base_v_tangent + velocity_adjustment
-                    vx = adjusted_v_tangent * utx
-                    vy = adjusted_v_tangent * uty
-                    
-                    # Re-apply radial component
-                    vx += radial * urx
-                    vy += radial * ury
-                    
-                    # Debug print
-                    if now - last_print > PRINT_PERIOD:
-                        print(f"Bot {rid}: front_gap={front_gap:.3f}, behind_gap={behind_gap:.3f}, adj={velocity_adjustment:.3f}")
+            # Sort gaps to find immediate neighbors
+            positive_gaps = [g for g in gaps if g > 0]
+            negative_gaps = [g for g in gaps if g < 0]
+            
+            front_gap = min(positive_gaps) if positive_gaps else math.pi
+            behind_gap = -max(negative_gaps) if negative_gaps else math.pi
+            
+            # Calculate ideal gap based on number of neighbors
+            estimated_total = len(nbrs) + 1  # neighbors + self
+            ideal_gap = 2 * math.pi / estimated_total
+            
+            # STRONG enforcement: adjust speed to match ideal spacing
+            current_min_gap = min(front_gap, behind_gap)
+            
+            if current_min_gap < ideal_gap * 0.6:
+                # Way too close - slow down significantly
+                vx *= 0.4
+                vy *= 0.4
+            elif current_min_gap < ideal_gap * 0.8:
+                # Too close - moderate slowdown
+                vx *= 0.7
+                vy *= 0.7
+            elif current_min_gap > ideal_gap * 1.5:
+                # Too far - speed up
+                vx *= 1.3
+                vy *= 1.3
+            elif current_min_gap > ideal_gap * 2.0:
+                # Way too far - significant speedup
+                vx *= 1.6
+                vy *= 1.6
 
         # ---- COLLISION AVOIDANCE ----
         collision_detected = False
