@@ -51,12 +51,30 @@ def safe_pose(robot):
         return float(p[0]), float(p[1]), float(p[2])
     return None
 
+# def get_id(robot):
+#     vid_attr = getattr(robot, "virtual_id", None)
+#     try:
+#         return vid_attr() if callable(vid_attr) else int(vid_attr or 0)
+#     except:
+#         return -1
+
 def get_id(robot):
-    vid_attr = getattr(robot, "virtual_id", None)
-    try:
-        return vid_attr() if callable(vid_attr) else int(vid_attr or 0)
-    except:
-        return -1
+    # Preferred: real robot's integer ID
+    if hasattr(robot, "id"):
+        try:
+            return int(robot.id)
+        except:
+            pass
+
+    # Simulation / Python test harness: virtual_id()
+    if hasattr(robot, "virtual_id"):
+        try:
+            return robot.virtual_id()
+        except:
+            pass
+
+    return -1
+
 
 # ---------- GUI-parity helpers (from “glitch” style) ----------
 def soft_boundary_force(x, y, max_force=0.3, boundary_margin=0.08):
@@ -244,3 +262,4 @@ def usr(robot):
             last_print_time = now
 
         robot.delay(20)
+
