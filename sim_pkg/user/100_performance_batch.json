@@ -1,6 +1,6 @@
 {
     "NUM_RUNS": 1,
-    "DEFAULT_USER": "breathing.py",
+    "DEFAULT_USER": "100_performance.py",
     "DEFAULT_INIT": "init_pose.csv",
     "DEFAULT_CONFIG": "config.json",
     "DEFAULT_TRIALS": 1

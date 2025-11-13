@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Jitter P2P (SIM) — short random darts with peer-aware avoidance + dancer ring safety.
 # SIM NOTES:
-#   - Uses robot.id() and print() for logging.
-#   - To port to physical testbed, change get_id() to robot.virtual_id()
+#   - Uses robot.id (attribute) for ID in simulation.
+#   - Uses send_msg / recv_msg for P2P heartbeats.
+#   - To port to physical testbed, change get_id() to prefer robot.virtual_id()
 #     and change logw() to use the provided log.write(...).
 
 import math, struct, random
@@ -46,32 +47,35 @@ SAMPLES      = 20
 BIAS_STD     = 0.9  # radians; set 0 for uniform
 
 # -------- messaging (heartbeats) --------
-HB_FMT   = 'fffffi'    # (x, y, th, vx, vy, vid) 24 bytes
+# (x, y, th, vx, vy, vid) -> 5 floats + 1 int
+HB_FMT   = 'fffffi'
 HB_BYTES = struct.calcsize(HB_FMT)
 HB_DT    = 0.12        # ~8–9 Hz
 STALE_S  = 0.7
 
 # ---------- small helpers ----------
-def clamp(v, lo, hi): return lo if v < lo else (hi if v > hi else v)
+def clamp(v, lo, hi):
+    return lo if v < lo else (hi if v > hi else v)
 
 def wrap_angle(a):
-    while a >  math.pi: a -= 2.0*math.pi
-    while a <= -math.pi: a += 2.0*math.pi
+    while a >  math.pi:  a -= 2.0 * math.pi
+    while a <= -math.pi: a += 2.0 * math.pi
     return a
 
 def soft_boundary_force(x, y):
     fx = fy = 0.0
     if x < X_MIN + WALL_MARGIN:
-        fx += MAX_SOFT_F * (1.0 - (x - X_MIN)/WALL_MARGIN)
+        fx += MAX_SOFT_F * (1.0 - (x - X_MIN) / WALL_MARGIN)
     elif x > X_MAX - WALL_MARGIN:
-        fx -= MAX_SOFT_F * (1.0 - (X_MAX - x)/WALL_MARGIN)
+        fx -= MAX_SOFT_F * (1.0 - (X_MAX - x) / WALL_MARGIN)
     if y < Y_MIN + WALL_MARGIN:
-        fy += MAX_SOFT_F * (1.0 - (y - Y_MIN)/WALL_MARGIN)
+        fy += MAX_SOFT_F * (1.0 - (y - Y_MIN) / WALL_MARGIN)
     elif y > Y_MAX - WALL_MARGIN:
-        fy -= MAX_SOFT_F * (1.0 - (Y_MAX - y)/WALL_MARGIN)
+        fy -= MAX_SOFT_F * (1.0 - (Y_MAX - y) / WALL_MARGIN)
     return fx, fy
 
 def boundary_state(x, y):
+    # 2 = critical, 1 = warning, 0 = safe
     if (x < X_MIN + WALL_CRIT or x > X_MAX - WALL_CRIT or
         y < Y_MIN + WALL_CRIT or y > Y_MAX - WALL_CRIT):
         return 2
@@ -81,16 +85,21 @@ def boundary_state(x, y):
     return 0
 
 def obstacle_push(x, y, max_force=0.8, buffer_width=0.12):
-    dx = x - OBST_CX; dy = y - OBST_CY; r = math.hypot(dx, dy)
+    dx = x - OBST_CX
+    dy = y - OBST_CY
+    r  = math.hypot(dx, dy)
     if r < SAFE_BUBBLE + buffer_width:
-        if r < 1e-6: return max_force, 0.0
+        if r < 1e-6:
+            return max_force, 0.0
         s = max(0.0, (SAFE_BUBBLE + buffer_width - r) / buffer_width) * max_force
-        return s * (dx/r), s * (dy/r)
+        return s * (dx / r), s * (dy / r)
     return 0.0, 0.0
 
 def safe_pose(robot):
+    """Return (x,y,th) as floats, or None if pose invalid."""
     p = robot.get_pose()
-    if p and len(p) >= 3: return float(p[0]), float(p[1]), float(p[2])
+    if isinstance(p, (list, tuple)) and len(p) >= 3:
+        return float(p[0]), float(p[1]), float(p[2])
     return None
 
 def heading_to_wheels(err, fwd, lastL, lastR):
@@ -103,34 +112,62 @@ def heading_to_wheels(err, fwd, lastL, lastR):
 
 # --- portability shims (SIM ⇄ PHYSICAL) ---
 def get_id(robot):
-    """SIM: robot.id ; PHYSICAL: return robot.virtual_id()"""
-    try: return int(robot.id())
-    except: return 0
+    """
+    SIM: use robot.id (attribute).
+    PHYSICAL: prefer robot.virtual_id(), fall back to robot.id if present.
+    """
+    # simulation: robot.id is an attribute
+    if hasattr(robot, "id"):
+        try:
+            return int(robot.id)
+        except:
+            pass
+
+    # physical testbed: often robot.virtual_id() exists
+    if hasattr(robot, "virtual_id"):
+        try:
+            return int(robot.virtual_id())
+        except:
+            pass
+
+    return -1
 
 def logw(msg):
-    """SIM: print ; PHYSICAL: log.write(msg + '\\n')"""
+    """SIM: print ; PHYSICAL: replace with log.write(msg + '\\n')."""
     print(msg)
 
 # ---------- heading chooser ----------
 def choose_safe_heading(x, y, th, neighbors):
     best_h, best_score = th, -1e9
     for _ in range(SAMPLES):
-        cand = wrap_angle(th + (random.gauss(0.0, BIAS_STD) if BIAS_STD > 0 else random.uniform(-math.pi, math.pi)))
+        if BIAS_STD > 0:
+            cand = wrap_angle(th + random.gauss(0.0, BIAS_STD))
+        else:
+            cand = random.uniform(-math.pi, math.pi)
+
         step = 0.18
         px = x + step * math.cos(cand)
         py = y + step * math.sin(cand)
 
         score = 0.0
+        # neighbor avoidance / spacing
         for _, (nx, ny, _, _, _) in neighbors.items():
             d = math.hypot(px - nx, py - ny)
-            if d < PANIC_RADIUS: score -= 1000.0
-            elif d < SEP_RADIUS: score -= 200.0 * (SEP_RADIUS - d)
-            else: score += min(d, 0.6)
+            if d < PANIC_RADIUS:
+                score -= 1000.0
+            elif d < SEP_RADIUS:
+                score -= 200.0 * (SEP_RADIUS - d)
+            else:
+                score += min(d, 0.6)
 
+        # dancer bubble avoidance
         od = math.hypot(px - OBST_CX, py - OBST_CY)
-        if od < SAFE_BUBBLE: score -= 800.0
-        else: score += min(od - SAFE_BUBBLE, 0.5)
+        if od < SAFE_BUBBLE:
+            score -= 800.0
+        # else:
+        #     score += min(od - SAFE_BUBBLE, 0.5)
 
+        # wall margin penalty
         if (px < X_MIN + WALL_MARGIN or px > X_MAX - WALL_MARGIN or
             py < Y_MIN + WALL_MARGIN or py > Y_MAX - WALL_MARGIN):
             score -= 500.0
@@ -143,52 +180,75 @@ def choose_safe_heading(x, y, th, neighbors):
 def usr(robot):
     robot.delay(400)  # sim settle
     vid = get_id(robot)
-    random.seed((vid if vid is not None else 0)*1103515245 & 0xFFFFFFFF)
+    random.seed((vid if vid is not None else 0) * 1103515245 & 0xFFFFFFFF)
 
+    
     neighbors = {}   # vid -> (x,y,th,vx,vy)
     last_seen = {}   # vid -> t
     last_hb   = -1e9
 
-    next_dart_at = 0.0
-    aim_until = 0.0
-    dart_until = 0.0
-    cooldown_until = 0.0
-    target_h = 0.0
-    evasive_until = 0.0
-    lastL = lastR = 0
-    last_log = 0.0
+    # --- desynchronize first dart per robot ---
+    now = robot.get_clock()
+    initial_wiggle    = random.uniform(0.0, 2.0)          # each bot waits 0–2s before first dart cycle
+    cooldown_until    = now + initial_wiggle
+    next_dart_at      = cooldown_until + random.uniform(JITTER_LO, JITTER_HI)
+    aim_until         = 0.0
+    dart_until        = 0.0
+    evasive_until     = 0.0
+    target_h          = 0.0
+    lastL = lastR     = 0
+    last_log          = 0.0
+
 
     # kick once so pose starts updating
-    robot.set_vel(20, 20); robot.delay(120)
+    robot.set_vel(20, 20)
+    robot.delay(120)
 
     while True:
         pose = safe_pose(robot)
         if pose is None:
-            robot.set_vel(0,0); robot.delay(DT_MS); continue
+            robot.set_vel(0, 0)
+            robot.delay(DT_MS)
+            continue
         x, y, th = pose
         now = robot.get_clock()
 
         # boundary LEDs (sim-safe colors)
-        b = boundary_state(x,y)
+        b = boundary_state(x, y)
         if b == 2:
-            robot.set_led(100,0,0); robot.set_vel(0,0); robot.delay(DT_MS); continue
-        elif b == 1: robot.set_led(120,60,0)
-        else:        robot.set_led(40,120,200)
+            robot.set_led(100, 0, 0)
+            robot.set_vel(0, 0)
+            robot.delay(DT_MS)
+            continue
+        elif b == 1:
+            robot.set_led(120, 60, 0)
+        else:
+            robot.set_led(40, 120, 200)
 
         # --- heartbeat send (finite diff for vx,vy) ---
         if now - last_hb >= HB_DT:
-            x1,y1,_ = pose; t1 = now
+            x1, y1, _ = pose
+            t1 = now
             robot.delay(50)
             p2 = safe_pose(robot)
             if p2:
-                x2,y2,th2 = p2; t2 = robot.get_clock()
+                x2, y2, th2 = p2
+                t2 = robot.get_clock()
                 dt = max(1e-3, t2 - t1)
-                vx = (x2 - x1)/dt; vy = (y2 - y1)/dt
+                vx = (x2 - x1) / dt
+                vy = (y2 - y1) / dt
                 try:
-                    robot.send_msg(struct.pack(HB_FMT, float(x2), float(y2), float(th2), float(vx), float(vy), int(vid)))
-                except: pass
+                    hb = struct.pack(
+                        HB_FMT,
+                        float(x2), float(y2), float(th2),
+                        float(vx), float(vy),
+                        int(vid),
+                    )
+                    robot.send_msg(hb)
+                except:
+                    pass
                 last_hb = t2
-                x,y,th = x2,y2,th2
+                x, y, th = x2, y2, th2
             else:
                 last_hb = now
 
@@ -197,56 +257,69 @@ def usr(robot):
         for m in msgs:
             try:
                 nx, ny, nth, nvx, nvy, nid = struct.unpack(HB_FMT, m[:HB_BYTES])
-                if int(nid) != int(vid):
-                    neighbors[int(nid)] = (nx, ny, nth, nvx, nvy)
-                    last_seen[int(nid)] = now
-            except: pass
+                nid = int(nid)
+                if nid != int(vid):
+                    neighbors[nid] = (nx, ny, nth, nvx, nvy)
+                    last_seen[nid] = now
+            except:
+                # ignore malformed / short messages
+                pass
 
         # prune stale neighbors
-        cut = now - STALE_S
+        cutoff = now - STALE_S
         for nid in list(neighbors.keys()):
-            if last_seen.get(nid, 0.0) < cut:
-                neighbors.pop(nid, None); last_seen.pop(nid, None)
+            if last_seen.get(nid, 0.0) < cutoff:
+                neighbors.pop(nid, None)
+                last_seen.pop(nid, None)
 
-        # environmental nudges
+        # environmental nudges (walls + dancer bubble)
         fx, fy = soft_boundary_force(x, y)
         ox, oy = obstacle_push(x, y)
-        env_hdg = math.atan2(fy + oy, fx + ox) if (fx*fx + fy*fy + ox*ox + oy*oy) > 1e-9 else th
+        if fx*fx + fy*fy + ox*ox + oy*oy > 1e-9:
+            env_hdg = math.atan2(fy + oy, fx + ox)
+        else:
+            env_hdg = th
 
         # PANIC evade if closest neighbor too near
         nearest_d, nx, ny = 1e9, None, None
-        for _, (qx,qy,_,_,_) in neighbors.items():
-            d = math.hypot(x-qx, y-qy)
+        for _, (qx, qy, _, _, _) in neighbors.items():
+            d = math.hypot(x - qx, y - qy)
             if d < nearest_d:
                 nearest_d, nx, ny = d, qx, qy
-        if nearest_d < PANIC_RADIUS:
+        if nearest_d < PANIC_RADIUS and nx is not None:
             evasive_until = now + 0.40
             away = math.atan2(y - ny, x - nx)
-            # blend slightly with env to avoid walls/obstacle
             da = wrap_angle(env_hdg - away)
             target_h = wrap_angle(away + 0.25 * da)
 
         # schedule a new dart if free
-        if now >= cooldown_until and now >= evasive_until and now >= next_dart_at and now >= dart_until:
+        if (now >= cooldown_until and now >= evasive_until and
+            now >= next_dart_at and now >= dart_until):
             target_h = choose_safe_heading(x, y, th, neighbors)
-            aim_until   = now + AIM_TIME
-            dart_until  = aim_until + DART_TIME
+            aim_until      = now + AIM_TIME
+            dart_until     = aim_until + DART_TIME
             cooldown_until = dart_until + COOLDOWN
-            next_dart_at = cooldown_until + random.uniform(JITTER_LO, JITTER_HI)
-            robot.set_led(0,180,80)  # mint during dart cycle
+            next_dart_at   = cooldown_until + random.uniform(JITTER_LO, JITTER_HI)
+            robot.set_led(0, 180, 80)  # mint during dart cycle
 
-        # control mode: evade > dart > aim > idle
+        # control mode priority: evade > dart > aim > idle
         if now < evasive_until:
-            err = wrap_angle(target_h - th); fwd = FWD_AIM
+            err = wrap_angle(target_h - th)
+            fwd = FWD_AIM
         elif now < aim_until:
-            err = wrap_angle(target_h - th); fwd = FWD_AIM
+            err = wrap_angle(target_h - th)
+            fwd = FWD_AIM
         elif now < dart_until:
-            err = wrap_angle(target_h - th); fwd = FWD_JITTER
+            err = wrap_angle(target_h - th)
+            fwd = FWD_JITTER
         else:
-            err = wrap_angle(env_hdg - th); fwd = max(FWD_MIN, 0.45)
+            err = wrap_angle(env_hdg - th)
+            fwd = max(FWD_MIN, 0.45)
 
-        if b == 1: fwd *= 0.75
-        if fwd < FWD_MIN: fwd = FWD_MIN
+        if b == 1:
+            fwd *= 0.75
+        if fwd < FWD_MIN:
+            fwd = FWD_MIN
 
         left, right = heading_to_wheels(err, fwd, lastL, lastR)
         lastL, lastR = left, right
@@ -254,8 +327,8 @@ def usr(robot):
 
         if now - last_log > 2.0:
             state = ("evade" if now < evasive_until else
-                     "dart" if now < dart_until else
-                     "aim"  if now < aim_until else
+                     "dart"  if now < dart_until else
+                     "aim"   if now < aim_until else
                      "idle")
             logw(f"[SIM jitter_p2p] id={vid} n={len(neighbors)} state={state}")
             last_log = now

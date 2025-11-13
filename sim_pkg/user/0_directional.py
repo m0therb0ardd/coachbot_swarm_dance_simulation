@@ -17,7 +17,7 @@ STOP_MSG = b"S"  # global emergency stop message
 
 # ===== Translation plan =====
 # MOVE_DIR -1 means screen up (viewer left), +1 screen down
-MOVE_DIR    = -1
+MOVE_DIR    = 1
 SHIFT_RATE  = 0.18      # m/s center velocity
 STOP_MARGIN = 0.08      # keep ring this far from wall at stop
 
@@ -71,7 +71,7 @@ def get_id(robot):
 
     return -1
 
-# ---------- GUI-parity helpers (from “glitch” style) ----------
+# ---------- GUI-parity helpers  ----------
 def soft_boundary_force(x, y, max_force=0.3, boundary_margin=0.08):
     fx, fy = 0.0, 0.0
     if x < X_MIN + boundary_margin:
@@ -245,12 +245,6 @@ def usr(robot):
             # For this translation, let the walls be the only limiter.
             # Obstacle safety is handled by is_critical_obstacle(...) and soft forces.
             s_stop = s_wall
-
-
-            
-
-
-
             # synced start half-second grid
             now = robot.get_clock()
             t0 = math.floor(now * 2.0) / 2.0 + 0.5
@@ -287,12 +281,12 @@ def usr(robot):
         vy = KY * ey
 
         # feed-forward along the translate direction (now vertical)
-        vy += -MOVE_DIR * SHIFT_RATE   # MOVE_DIR=-1 => vy += +SHIFT_RATE (up)
+        # vy += -MOVE_DIR * SHIFT_RATE   # MOVE_DIR=-1 => vy += +SHIFT_RATE (up)
 
         # Radial lock to initial offset
-        rx, ry = x - Cx, y - Cy
-        vx += KR * (rel_off[0] - rx)
-        vy += KR * (rel_off[1] - ry)
+        # rx, ry = x - Cx, y - Cy
+        # vx += KR * (rel_off[0] - rx)
+        # vy += KR * (rel_off[1] - ry)
 
         # Soft boundary cushion (visual parity; mild effect)
         bfx, bfy = soft_boundary_force(x, y, max_force=0.3, boundary_margin=0.08)

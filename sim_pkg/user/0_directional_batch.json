@@ -1,7 +1,7 @@
 {
     "NUM_RUNS": 1,
-    "DEFAULT_USER": "slash_ptp.py",
-    "DEFAULT_INIT": "init_pose.csv",
+    "DEFAULT_USER": "0_directional.py",
+    "DEFAULT_INIT": "init_pose_after_left.csv",
     "DEFAULT_CONFIG": "config.json",
     "DEFAULT_TRIALS": 1
   }

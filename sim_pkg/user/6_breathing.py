@@ -476,4 +476,3 @@ def usr(robot):
             try: log_main.close()
             except: pass
 
-
