@@ -1,0 +1,386 @@
+Robot 4 starting: Translate with centroid-based center
+Robot 7 starting: Translate with centroid-based center
+Robot 5 starting: Translate with centroid-based center
+Robot 6 starting: Translate with centroid-based center
+Robot 10 starting: Translate with centroid-based center
+Robot 1 starting: Translate with centroid-based center
+Robot 2 starting: Translate with centroid-based center
+Robot 8 starting: Translate with centroid-based center
+Robot 9 starting: Translate with centroid-based center
+Robot 0 starting: Translate with centroid-based center
+Robot 3 starting: Translate with centroid-based center
+Robot 7: formation center = (-0.106, 0.931), from 11 robots
+Robot 4: formation center = (-0.106, 0.931), from 11 robots
+Robot 5: formation center = (-0.106, 0.931), from 11 robots
+Robot 8: formation center = (-0.106, 0.931), from 11 robots
+Robot 10: formation center = (-0.106, 0.931), from 11 robots
+Robot 0: formation center = (-0.106, 0.931), from 11 robots
+Robot 2: formation center = (-0.106, 0.931), from 11 robots
+Robot 1: formation center = (-0.106, 0.931), from 11 robots
+Robot 9: formation center = (-0.106, 0.931), from 11 robots
+Robot 6: formation center = (-0.106, 0.931), from 11 robots
+Robot 3: formation center = (-0.106, 0.931), from 11 robots
+Robot 4 locked: R=0.683, s_stop=1.519
+Robot 7 locked: R=0.669, s_stop=1.533
+Robot 5 locked: R=0.680, s_stop=1.522
+Robot 8 locked: R=0.684, s_stop=1.517
+Robot 2 locked: R=0.707, s_stop=1.495
+Robot 1 locked: R=0.679, s_stop=1.522
+Robot 6 locked: R=0.668, s_stop=1.533
+Robot 9 locked: R=0.672, s_stop=1.529
+Robot 10 locked: R=0.656, s_stop=1.545
+Robot 0 locked: R=0.682, s_stop=1.519
+Robot 3 locked: R=0.683, s_stop=1.518
+Robot 10 started moving
+Robot 3 started moving
+Robot 0 started moving
+Robot 9 started moving
+Robot 2 started moving
+Robot 6 started moving
+Robot 1 started moving
+Robot 5 started moving
+Robot 8 started moving
+Robot 7 started moving
+Robot 10 pos [0.408, 0.523], s=0.002
+Robot 0 pos [0.576, 0.906], s=0.002
+Robot 3 pos [-0.199, 1.608], s=0.002
+Robot 6 pos [-0.745, 0.738], s=0.004
+Robot 4 started moving
+Robot 2 pos [0.179, 1.578], s=0.004
+Robot 1 pos [0.467, 1.297], s=0.004
+Robot 9 pos [0.183, 0.324], s=0.002
+Robot 5 pos [-0.752, 1.141], s=0.005
+Robot 8 pos [-0.193, 0.253], s=0.005
+Robot 7 pos [-0.540, 0.423], s=0.005
+Robot 4 pos [-0.546, 1.453], s=0.009
+Robot 0 pos [0.587, 0.884], s=0.373
+Robot 8 pos [-0.182, 0.228], s=0.374
+Robot 6 pos [-0.733, 0.705], s=0.374
+Robot 3 pos [-0.187, 1.578], s=0.374
+Robot 7 pos [-0.528, 0.400], s=0.378
+Robot 5 pos [-0.740, 1.108], s=0.378
+Robot 1 pos [0.478, 1.277], s=0.378
+Robot 9 pos [0.195, 0.292], s=0.378
+Robot 4 pos [-0.534, 1.423], s=0.378
+Robot 10 pos [0.420, 0.483], s=0.378
+Robot 2 pos [0.191, 1.544], s=0.379
+Robot 6 pos [-0.734, 0.642], s=0.734
+Robot 1 pos [0.479, 1.204], s=0.741
+Robot 7 pos [-0.528, 0.335], s=0.742
+Robot 2 pos [0.190, 1.481], s=0.742
+Robot 5 pos [-0.741, 1.043], s=0.742
+Robot 3 pos [-0.188, 1.515], s=0.742
+Robot 8 pos [-0.182, 0.157], s=0.742
+Robot 0 pos [0.588, 0.823], s=0.745
+Robot 4 pos [-0.534, 1.353], s=0.745
+Robot 9 pos [0.194, 0.226], s=0.745
+Robot 10 pos [0.419, 0.420], s=0.746
+Robot 6 pos [-0.734, 0.570], s=1.100
+Robot 0 pos [0.587, 0.760], s=1.108
+Robot 10 pos [0.418, 0.352], s=1.108
+Robot 2 pos [0.190, 1.403], s=1.108
+Robot 1 pos [0.478, 1.136], s=1.108
+Robot 3 pos [-0.188, 1.447], s=1.108
+Robot 7 pos [-0.529, 0.262], s=1.108
+Robot 9 pos [0.194, 0.156], s=1.108
+Robot 4 pos [-0.535, 1.288], s=1.108
+Robot 5 pos [-0.741, 0.978], s=1.108
+Robot 8 pos [-0.182, 0.084], s=1.108
+Robot 3 pos [-0.189, 1.387], s=1.469
+Robot 8 pos [-0.183, 0.015], s=1.469
+Robot 6 pos [-0.735, 0.501], s=1.469
+Robot 5 pos [-0.742, 0.908], s=1.469
+Robot 7 pos [-0.529, 0.201], s=1.473
+Robot 10 pos [0.418, 0.291], s=1.470
+Robot 2 pos [0.189, 1.331], s=1.473
+Robot 9 pos [0.193, 0.088], s=1.473
+Robot 4 pos [-0.535, 1.229], s=1.470
+Robot 1 pos [0.478, 1.073], s=1.473
+Robot 0 pos [0.587, 0.695], s=1.477
+Robot 1 pos [0.477, 0.997], s=1.522
+Robot 3 pos [-0.189, 1.318], s=1.518
+Robot 8 pos [-0.183, -0.058], s=1.517
+Robot 6 pos [-0.735, 0.427], s=1.533
+Robot 7 pos [-0.530, 0.132], s=1.533
+Robot 9 pos [0.193, 0.017], s=1.529
+Robot 0 pos [0.586, 0.621], s=1.519
+Robot 4 pos [-0.536, 1.148], s=1.519
+Robot 2 pos [0.189, 1.272], s=1.495
+Robot 5 pos [-0.742, 0.832], s=1.522
+Robot 10 pos [0.418, 0.215], s=1.545
+Robot 1 pos [0.477, 0.945], s=1.522
+Robot 4 pos [-0.536, 1.089], s=1.519
+Robot 3 pos [-0.190, 1.264], s=1.518
+Robot 7 pos [-0.530, 0.067], s=1.533
+Robot 8 pos [-0.184, -0.122], s=1.517
+Robot 6 pos [-0.736, 0.370], s=1.533
+Robot 0 pos [0.586, 0.554], s=1.519
+Robot 9 pos [0.192, -0.047], s=1.529
+Robot 2 pos [0.188, 1.210], s=1.495
+Robot 5 pos [-0.743, 0.760], s=1.522
+Robot 10 pos [0.417, 0.148], s=1.545
+Robot 1 pos [0.476, 0.881], s=1.522
+Robot 3 pos [-0.190, 1.197], s=1.518
+Robot 8 pos [-0.184, -0.200], s=1.517
+Robot 10 pos [0.417, 0.086], s=1.545
+Robot 2 pos [0.188, 1.147], s=1.495
+Robot 6 pos [-0.736, 0.301], s=1.533
+Robot 0 pos [0.585, 0.485], s=1.519
+Robot 4 pos [-0.537, 1.018], s=1.519
+Robot 7 pos [-0.531, -0.007], s=1.533
+Robot 9 pos [0.192, -0.116], s=1.529
+Robot 5 pos [-0.743, 0.689], s=1.522
+Robot 1 pos [0.476, 0.808], s=1.522
+Robot 2 pos [0.187, 1.076], s=1.495
+Robot 7 pos [-0.531, -0.085], s=1.533
+Robot 3 pos [-0.190, 1.137], s=1.518
+Robot 9 pos [0.191, -0.189], s=1.529
+Robot 5 pos [-0.744, 0.616], s=1.522
+Robot 6 pos [-0.737, 0.233], s=1.533
+Robot 0 pos [0.585, 0.415], s=1.519
+Robot 10 pos [0.417, 0.021], s=1.545
+Robot 4 pos [-0.537, 0.947], s=1.519
+Robot 8 pos [-0.185, -0.256], s=1.517
+Robot 1 pos [0.475, 0.733], s=1.522
+Robot 3 pos [-0.191, 1.070], s=1.518
+Robot 6 pos [-0.737, 0.162], s=1.533
+Robot 9 pos [0.191, -0.260], s=1.529
+Robot 7 pos [-0.532, -0.155], s=1.533
+Robot 5 pos [-0.744, 0.542], s=1.522
+Robot 2 pos [0.187, 1.008], s=1.495
+Robot 0 pos [0.584, 0.348], s=1.519
+Robot 10 pos [0.416, -0.053], s=1.545
+Robot 4 pos [-0.538, 0.872], s=1.519
+Robot 8 pos [-0.185, -0.332], s=1.517
+Robot 0 pos [0.584, 0.278], s=1.519
+Robot 6 pos [-0.738, 0.097], s=1.533
+Robot 7 pos [-0.532, -0.226], s=1.533
+Robot 10 pos [0.416, -0.123], s=1.545
+Robot 5 pos [-0.745, 0.479], s=1.522
+Robot 1 pos [0.475, 0.669], s=1.522
+Robot 2 pos [0.187, 0.942], s=1.495
+Robot 9 pos [0.190, -0.331], s=1.529
+Robot 3 pos [-0.191, 1.000], s=1.518
+Robot 4 pos [-0.538, 0.799], s=1.519
+Robot 8 pos [-0.186, -0.402], s=1.517
+Robot 2 starting: Translate with centroid-based center
+Robot 3 starting: Translate with centroid-based center
+Robot 5 starting: Translate with centroid-based center
+Robot 8 starting: Translate with centroid-based center
+Robot 10 starting: Translate with centroid-based center
+Robot 4 starting: Translate with centroid-based center
+Robot 6 starting: Translate with centroid-based center
+Robot 0 starting: Translate with centroid-based center
+Robot 7 starting: Translate with centroid-based center
+Robot 9 starting: Translate with centroid-based center
+Robot 1 starting: Translate with centroid-based center
+Robot 5: formation center = (-0.106, 0.931), from 11 robots
+Robot 9: formation center = (-0.106, 0.931), from 11 robots
+Robot 0: formation center = (-0.106, 0.931), from 11 robots
+Robot 4: formation center = (-0.106, 0.931), from 11 robots
+Robot 3: formation center = (-0.106, 0.931), from 11 robots
+Robot 10: formation center = (-0.106, 0.931), from 11 robots
+Robot 7: formation center = (-0.106, 0.931), from 11 robots
+Robot 6: formation center = (-0.106, 0.931), from 11 robots
+Robot 2: formation center = (-0.106, 0.931), from 11 robots
+Robot 1: formation center = (-0.106, 0.931), from 11 robots
+Robot 8: formation center = (-0.106, 0.931), from 11 robots
+Robot 5 locked: R=0.680, s_stop=1.522
+Robot 9 locked: R=0.672, s_stop=1.529
+Robot 8 locked: R=0.684, s_stop=1.517
+Robot 1 locked: R=0.679, s_stop=1.522
+Robot 3 locked: R=0.683, s_stop=1.518
+Robot 7 locked: R=0.669, s_stop=1.533
+Robot 2 locked: R=0.707, s_stop=1.495
+Robot 10 locked: R=0.656, s_stop=1.545
+Robot 6 locked: R=0.668, s_stop=1.533
+Robot 0 locked: R=0.682, s_stop=1.519
+Robot 4 locked: R=0.683, s_stop=1.519
+Robot 1 started moving
+Robot 2 started moving
+Robot 7 started moving
+Robot 4 started moving
+Robot 3 started moving
+Robot 8 started moving
+Robot 10 started moving
+Robot 0 started moving
+Robot 6 started moving
+Robot 1 pos [0.467, 1.297], s=0.000
+Robot 5 started moving
+Robot 6 pos [-0.745, 0.738], s=0.001
+Robot 8 pos [-0.193, 0.253], s=0.001
+Robot 4 pos [-0.546, 1.453], s=0.000
+Robot 10 pos [0.408, 0.523], s=0.001
+Robot 3 pos [-0.199, 1.608], s=0.001
+Robot 7 pos [-0.540, 0.423], s=0.001
+Robot 0 pos [0.576, 0.906], s=0.001
+Robot 2 pos [0.179, 1.578], s=0.000
+Robot 9 started moving
+Robot 5 pos [-0.752, 1.141], s=0.005
+Robot 9 pos [0.183, 0.324], s=0.009
+Robot 1 pos [0.479, 1.269], s=0.365
+Robot 4 pos [-0.534, 1.429], s=0.371
+Robot 8 pos [-0.181, 0.219], s=0.371
+Robot 6 pos [-0.733, 0.702], s=0.371
+Robot 5 pos [-0.740, 1.107], s=0.372
+Robot 3 pos [-0.187, 1.574], s=0.372
+Robot 2 pos [0.191, 1.545], s=0.371
+Robot 7 pos [-0.528, 0.384], s=0.372
+Robot 0 pos [0.588, 0.870], s=0.373
+Robot 9 pos [0.195, 0.289], s=0.373
+Robot 10 pos [0.420, 0.493], s=0.374
+Robot 1 pos [0.479, 1.196], s=0.726
+Robot 7 pos [-0.529, 0.306], s=0.733
+Robot 4 pos [-0.534, 1.362], s=0.733
+Robot 0 pos [0.587, 0.795], s=0.734
+Robot 2 pos [0.191, 1.475], s=0.733
+Robot 5 pos [-0.741, 1.038], s=0.734
+Robot 10 pos [0.419, 0.420], s=0.734
+Robot 9 pos [0.194, 0.212], s=0.734
+Robot 6 pos [-0.734, 0.632], s=0.734
+Robot 3 pos [-0.188, 1.506], s=0.734
+Robot 8 pos [-0.182, 0.139], s=0.734
+Robot 1 pos [0.478, 1.126], s=1.087
+Robot 5 pos [-0.741, 0.970], s=1.096
+Robot 0 pos [0.587, 0.739], s=1.095
+Robot 9 pos [0.194, 0.148], s=1.096
+Robot 6 pos [-0.735, 0.561], s=1.096
+Robot 7 pos [-0.530, 0.233], s=1.096
+Robot 4 pos [-0.535, 1.296], s=1.096
+Robot 8 pos [-0.183, 0.066], s=1.097
+Robot 10 pos [0.418, 0.354], s=1.096
+Robot 2 pos [0.190, 1.404], s=1.099
+Robot 3 pos [-0.188, 1.440], s=1.100
+Robot 1 pos [0.477, 1.058], s=1.448
+Robot 6 pos [-0.735, 0.493], s=1.456
+Robot 10 pos [0.418, 0.287], s=1.456
+Robot 9 pos [0.193, 0.065], s=1.456
+Robot 0 pos [0.586, 0.669], s=1.456
+Robot 7 pos [-0.531, 0.155], s=1.462
+Robot 3 pos [-0.189, 1.374], s=1.467
+Robot 4 pos [-0.535, 1.223], s=1.467
+Robot 2 pos [0.189, 1.341], s=1.471
+Robot 8 pos [-0.183, -0.005], s=1.471
+Robot 5 pos [-0.742, 0.897], s=1.471
+Robot 1 pos [0.477, 0.992], s=1.522
+Robot 0 pos [0.586, 0.603], s=1.519
+Robot 9 pos [0.193, -0.008], s=1.529
+Robot 10 pos [0.418, 0.221], s=1.545
+Robot 6 pos [-0.736, 0.425], s=1.533
+Robot 7 pos [-0.531, 0.082], s=1.533
+Robot 8 pos [-0.184, -0.076], s=1.517
+Robot 5 pos [-0.742, 0.834], s=1.522
+Robot 3 pos [-0.189, 1.301], s=1.518
+Robot 4 pos [-0.536, 1.162], s=1.519
+Robot 2 pos [0.189, 1.267], s=1.495
+Robot 0 pos [0.585, 0.544], s=1.519
+Robot 9 pos [0.192, -0.074], s=1.529
+Robot 1 pos [0.476, 0.923], s=1.522
+Robot 10 pos [0.417, 0.154], s=1.545
+Robot 7 pos [-0.532, 0.013], s=1.533
+Robot 6 pos [-0.736, 0.343], s=1.533
+Robot 8 pos [-0.184, -0.138], s=1.517
+Robot 4 pos [-0.536, 1.097], s=1.519
+Robot 2 pos [0.188, 1.200], s=1.495
+Robot 5 pos [-0.743, 0.764], s=1.522
+Robot 3 pos [-0.190, 1.224], s=1.518
+Robot 0 pos [0.585, 0.474], s=1.519
+Robot 9 pos [0.192, -0.154], s=1.529
+Robot 1 pos [0.476, 0.858], s=1.522
+Robot 7 pos [-0.532, -0.064], s=1.533
+Robot 10 pos [0.417, 0.087], s=1.545
+Robot 6 pos [-0.737, 0.276], s=1.533
+Robot 2 pos [0.188, 1.121], s=1.495
+Robot 8 pos [-0.185, -0.210], s=1.517
+Robot 3 pos [-0.190, 1.150], s=1.518
+Robot 4 pos [-0.537, 1.023], s=1.519
+Robot 5 pos [-0.743, 0.697], s=1.522
+Robot 9 pos [0.191, -0.219], s=1.529
+Robot 0 pos [0.584, 0.401], s=1.519
+Robot 10 pos [0.416, 0.019], s=1.545
+Robot 1 pos [0.475, 0.792], s=1.522
+Robot 7 pos [-0.533, -0.129], s=1.533
+Robot 6 pos [-0.737, 0.206], s=1.533
+Robot 5 pos [-0.744, 0.624], s=1.522
+Robot 2 pos [0.187, 1.058], s=1.495
+Robot 8 pos [-0.185, -0.277], s=1.517
+Robot 4 pos [-0.537, 0.958], s=1.519
+Robot 3 pos [-0.191, 1.080], s=1.518
+Robot 0 pos [0.584, 0.344], s=1.519
+Robot 9 pos [0.191, -0.282], s=1.529
+Robot 7 pos [-0.533, -0.197], s=1.533
+Robot 10 pos [0.416, -0.046], s=1.545
+Robot 1 pos [0.475, 0.729], s=1.522
+Robot 6 pos [-0.737, 0.136], s=1.533
+Robot 4 pos [-0.538, 0.893], s=1.519
+Robot 8 pos [-0.186, -0.350], s=1.517
+Robot 5 pos [-0.744, 0.559], s=1.522
+Robot 2 pos [0.187, 0.983], s=1.495
+Robot 3 pos [-0.191, 1.015], s=1.518
+Robot 0 pos [0.584, 0.283], s=1.519
+Robot 9 pos [0.190, -0.355], s=1.529
+Robot 1 pos [0.475, 0.671], s=1.522
+Robot 7 pos [-0.533, -0.260], s=1.533
+Robot 10 pos [0.415, -0.114], s=1.545
+Robot 6 pos [-0.738, 0.061], s=1.533
+Robot 5 pos [-0.745, 0.486], s=1.522
+Robot 3 pos [-0.192, 0.949], s=1.518
+Robot 8 pos [-0.186, -0.418], s=1.517
+Robot 4 pos [-0.538, 0.822], s=1.519
+Robot 2 pos [0.186, 0.905], s=1.495
+Robot 0 pos [0.583, 0.207], s=1.519
+Robot 9 pos [0.190, -0.426], s=1.529
+Robot 10 pos [0.415, -0.187], s=1.545
+Robot 1 pos [0.474, 0.604], s=1.522
+Robot 7 pos [-0.534, -0.324], s=1.533
+Robot 6 pos [-0.738, -0.008], s=1.533
+Robot 2 pos [0.186, 0.829], s=1.495
+Robot 5 pos [-0.745, 0.415], s=1.522
+Robot 8 pos [-0.187, -0.491], s=1.517
+Robot 4 pos [-0.539, 0.748], s=1.519
+Robot 3 pos [-0.192, 0.880], s=1.518
+Robot 1 pos [0.474, 0.533], s=1.522
+Robot 9 pos [0.189, -0.492], s=1.529
+Robot 0 pos [0.583, 0.140], s=1.519
+Robot 10 pos [0.415, -0.255], s=1.545
+Robot 7 pos [-0.534, -0.387], s=1.533
+Robot 6 pos [-0.739, -0.079], s=1.533
+Robot 4 pos [-0.539, 0.680], s=1.519
+Robot 8 pos [-0.187, -0.564], s=1.517
+Robot 3 pos [-0.193, 0.816], s=1.518
+Robot 5 pos [-0.745, 0.354], s=1.522
+Robot 2 pos [0.186, 0.765], s=1.495
+Robot 1 pos [0.473, 0.460], s=1.522
+Robot 7 pos [-0.535, -0.456], s=1.533
+Robot 0 pos [0.582, 0.074], s=1.519
+Robot 9 pos [0.189, -0.565], s=1.529
+Robot 10 pos [0.414, -0.324], s=1.545
+Robot 8 pos [-0.188, -0.636], s=1.517
+Robot 3 pos [-0.193, 0.753], s=1.518
+Robot 4 pos [-0.540, 0.621], s=1.519
+Robot 6 pos [-0.739, -0.150], s=1.533
+Robot 5 pos [-0.746, 0.282], s=1.522
+Robot 2 pos [0.185, 0.694], s=1.495
+Robot 1 pos [0.473, 0.391], s=1.522
+Robot 10 pos [0.414, -0.387], s=1.545
+Robot 9 pos [0.188, -0.638], s=1.529
+Robot 7 pos [-0.535, -0.521], s=1.533
+Robot 0 pos [0.582, 0.001], s=1.519
+Robot 8 pos [-0.188, -0.704], s=1.517
+Robot 6 pos [-0.740, -0.217], s=1.533
+Robot 3 pos [-0.193, 0.680], s=1.518
+Robot 5 pos [-0.746, 0.216], s=1.522
+Robot 4 pos [-0.540, 0.551], s=1.519
+Robot 2 pos [0.185, 0.626], s=1.495
+Robot 7 pos [-0.536, -0.583], s=1.533
+Robot 10 pos [0.413, -0.451], s=1.545
+Robot 0 pos [0.581, -0.062], s=1.519
+Robot 1 pos [0.472, 0.320], s=1.522
+Robot 9 pos [0.188, -0.702], s=1.529
+Robot 4 pos [-0.541, 0.484], s=1.519
+Robot 6 pos [-0.740, -0.288], s=1.533
+Robot 5 pos [-0.747, 0.148], s=1.522
+Robot 8 pos [-0.189, -0.773], s=1.517
+Robot 3 pos [-0.194, 0.616], s=1.518
+Robot 2 pos [0.184, 0.553], s=1.495
+ROBOT 3 EMERGENCY STOP at [-0.194, 0.594]

@@ -1,4 +1,8 @@
 import math, struct
+import os
+
+LOG = None
+
 
 # ===== Testbed bounds & center =====
 X_MIN, X_MAX = -1.2, 1.0
@@ -39,7 +43,7 @@ CRIT_MARGIN_BOUNDARY = 0.02   # hard-stop margin
 USE_SOFT_OBST_FORCE  = False  # keep False to preserve your original trajectory
 OBST_WARN_BUFFER     = 0.10   # soft obstacle buffer for warning/optional push
 OBST_MAX_SOFT_FORCE  = 0.6    # only used if USE_SOFT_OBST_FORCE = True
-PRINT_PERIOD         = 2.0    # seconds (like glitch)
+logw_PERIOD         = 2.0    # seconds (like glitch)
 
 def clamp(v, lo, hi): return lo if v < lo else hi if v > hi else v
 
@@ -55,21 +59,58 @@ def safe_pose(robot):
     return None
 
 def get_id(robot):
-    # Preferred: real robot's integer ID
+    # Prefer real hardware ID when available
+    if hasattr(robot, "virtual_id") and callable(robot.virtual_id):
+        try:
+            return int(robot.virtual_id())
+        except Exception:
+            pass
+
+    # Simulation fallback
     if hasattr(robot, "id"):
         try:
             return int(robot.id)
-        except:
-            pass
-
-    # Simulation / Python test harness: virtual_id()
-    if hasattr(robot, "virtual_id"):
-        try:
-            return int(robot.virtual_id())
-        except:
+        except Exception:
             pass
 
     return -1
+
+
+def init_log():
+    """
+    Try to open experiment_log.txt in a hardware-like way.
+    If it fails (e.g., sim with no FS), we just fall back to logw only.
+    """
+    global LOG
+    try:
+        # line-buffered, Py2-safe style like FLOAT
+        LOG = open("experiment_log.txt", "a", 1)
+    except Exception:
+        LOG = None
+
+def logw(msg):
+    """
+    Write to log file (if available) AND print to stdout.
+    Safe in both sim and hardware.
+    """
+    if not isinstance(msg, str):
+        msg = str(msg)
+    line = msg if msg.endswith("\n") else msg + "\n"
+
+    # Try log file first
+    if LOG is not None:
+        try:
+            LOG.write(line)
+            LOG.flush()
+            os.fsync(LOG.fileno())
+        except Exception:
+            pass
+
+    # Always also print (so sim output still works)
+    print(line.rstrip("\n"))
+
+
+
 
 # ---------- GUI-parity helpers  ----------
 def soft_boundary_force(x, y, max_force=0.3, boundary_margin=0.08):
@@ -107,9 +148,10 @@ def soft_obstacle_force(x, y, max_force=OBST_MAX_SOFT_FORCE, buffer_width=OBST_W
     return 0.0, 0.0
 
 def usr(robot):
+    init_log()
     my_id = get_id(robot)
     robot.set_led(0, 180, 180)  # cyan normal
-    print(f"Robot {my_id} starting: Translate with centroid-based center")
+    logw(f"Robot {my_id} starting: Translate with centroid-based center")
     global_stop = False  # if True, this robot will permanently stop
 
 
@@ -158,7 +200,7 @@ def usr(robot):
     else:
         form_cx, form_cy = CX, CY
 
-    print(f"Robot {my_id}: formation center = ({form_cx:.3f}, {form_cy:.3f}), from {len(poses)} robots")
+    logw(f"Robot {my_id}: formation center = ({form_cx:.3f}, {form_cy:.3f}), from {len(poses)} robots")
 
     # ====== PHASE 1: the original translate-in-formation behavior ======
 
@@ -168,7 +210,7 @@ def usr(robot):
     s_stop  = None
     t0      = None
     started = False
-    last_print_time = 0.0
+    last_logw_time = 0.0
 
     robot.delay(300)  # small settle
 
@@ -203,7 +245,7 @@ def usr(robot):
 
             robot.set_vel(0, 0)
             robot.set_led(255, 50, 0)  # orange/red = critical
-            print(f"ROBOT {my_id} EMERGENCY STOP at [{x:.3f}, {y:.3f}]")
+            logw(f"ROBOT {my_id} EMERGENCY STOP at [{x:.3f}, {y:.3f}]")
             robot.delay(40)
             continue
 
@@ -249,7 +291,7 @@ def usr(robot):
             now = robot.get_clock()
             t0 = math.floor(now * 2.0) / 2.0 + 0.5
 
-            print(f"Robot {my_id} locked: R={R_form:.3f}, s_stop={s_stop:.3f}")
+            logw(f"Robot {my_id} locked: R={R_form:.3f}, s_stop={s_stop:.3f}")
 
         # Wait for shared start
         t = robot.get_clock()
@@ -259,7 +301,7 @@ def usr(robot):
                 robot.delay(10)
                 continue
             started = True
-            print(f"Robot {my_id} started moving")
+            logw(f"Robot {my_id} started moving")
 
         # Center shift
         s = min(max(0.0, t - t0) * SHIFT_RATE, s_stop)
@@ -325,9 +367,9 @@ def usr(robot):
 
         # glitch-like periodic console status
         now = robot.get_clock()
-        if now - last_print_time > PRINT_PERIOD:
-            print(f"Robot {my_id} pos [{x:.3f}, {y:.3f}], s={s:.3f}")
-            last_print_time = now
+        if now - last_logw_time > logw_PERIOD:
+            logw(f"Robot {my_id} pos [{x:.3f}, {y:.3f}], s={s:.3f}")
+            last_logw_time = now
 
         robot.delay(20)
 
