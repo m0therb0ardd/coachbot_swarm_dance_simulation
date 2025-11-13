@@ -1,0 +1,8 @@
+{
+    "NUM_RUNS": 1,
+    "DEFAULT_USER": "00_move_to_circle.py",
+    "DEFAULT_INIT": "init_pose_after_jitter.csv",
+    "DEFAULT_CONFIG": "config.json",
+    "DEFAULT_TRIALS": 1
+  }
+  
