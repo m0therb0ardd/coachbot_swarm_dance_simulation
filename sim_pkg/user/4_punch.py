@@ -18,7 +18,7 @@ CMD_SMOOTH  = 0.08        # snappy
 VEL_SLEW    = 24          # allow big jumps
 
 # --- headings / feel ---
-RIGHT_HEADING = 0.0
+RIGHT_HEADING = -math.pi/2 #this is down in world coords
 FWD_CHARGE    = 1.00      # full send
 FWD_FEINT     = 0.35
 FWD_RECOIL    = 0.55
@@ -267,14 +267,18 @@ def usr(robot):
                 robot.set_vel(0,0)  # slam stop
                 robot.delay(DT_MS); lastL=lastR=0
                 continue
-            # direct rightward attack but blend minimal safety so we don't spear someone
-            vx = 1.0 + repx + 0.4*(ex+ox) + 0.2*alx
-            vy = 0.0 + repy + 0.4*(ey+oy) + 0.2*aly
+            base_vx = math.cos(RIGHT_HEADING)
+            base_vy = math.sin(RIGHT_HEADING)
+
+            vx = base_vx + repx + 0.4*(ex+ox) + 0.2*alx
+            vy = base_vy + repy + 0.4*(ey+oy) + 0.2*aly
+
             if evade_h is not None:
-                # tiny nudge away if truly too close
                 vx += 0.2*math.cos(evade_h); vy += 0.2*math.sin(evade_h)
+
             hdg = math.atan2(vy, vx)
             err = wrap(hdg - th); fwd = FWD_CHARGE
+            
         elif state == "hold":
             if now >= hold_until:
                 state = "tap"; tap_until = now + DOUBLE_TAP
@@ -287,8 +291,8 @@ def usr(robot):
         elif state == "recoil":
             if now >= recoil_until:
                 state = "reset"; next_ready = now + COOLDOWN
-            # pull slightly back-left to reset space
-            rc = math.pi - 0.35
+            # *** CHANGED: recoil opposite-ish to attack (mostly upward) ***
+            rc = RIGHT_HEADING + math.pi - 0.35   # flip attack dir, slight angle
             vx = math.cos(rc) + ex + ox
             vy = math.sin(rc) + ey + oy
             hdg = math.atan2(vy, vx)
