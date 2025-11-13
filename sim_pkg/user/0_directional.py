@@ -1,8 +1,7 @@
-import math, struct
-import os
+import math, struct, os 
 
+# ===== LOGGING (sim and hardware) =====
 LOG = None
-
 
 # ===== Testbed bounds & center =====
 X_MIN, X_MAX = -1.2, 1.0

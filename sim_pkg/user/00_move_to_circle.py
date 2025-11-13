@@ -1,5 +1,43 @@
-import math, struct
+import math, struct, os
 
+# ===== Logging (sim + hardware) =====
+LOG = None   # global log handle
+
+def init_log():
+    """
+    Try to open experiment_log.txt in a hardware-like way.
+    If it fails (e.g., sim with no FS), we just fall back to print only.
+    """
+    global LOG
+    if LOG is not None:
+        return
+    try:
+        # line-buffered like your FLOAT HW script
+        LOG = open("experiment_log.txt", "a", 1)
+    except Exception:
+        LOG = None
+
+def logw(msg):
+    """
+    Write to log file (if available) AND print to stdout.
+    Safe in both sim and hardware.
+    """
+    if not isinstance(msg, str):
+        msg = str(msg)
+    line = msg if msg.endswith("\n") else msg + "\n"
+
+    # Log file (hardware) if available
+    if LOG is not None:
+        try:
+            LOG.write(line)
+            LOG.flush()
+            os.fsync(LOG.fileno())
+        except Exception:
+            pass
+
+    # Always also print (sim / console)
+    print(line.rstrip("\n"))
+    
 # ===== Testbed bounds & center =====
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
@@ -42,16 +80,23 @@ def safe_pose(robot):
     return None
 
 def get_id(robot):
+    """
+    Prefer hardware virtual_id(), fall back to sim .id.
+    """
+    # Real hardware ID
+    if hasattr(robot, "virtual_id") and callable(robot.virtual_id):
+        try:
+            return int(robot.virtual_id())
+        except Exception:
+            pass
+
+    # Simulation ID
     if hasattr(robot, "id"):
         try:
             return int(robot.id)
-        except:
+        except Exception:
             pass
-    if hasattr(robot, "virtual_id"):
-        try:
-            return int(robot.virtual_id())
-        except:
-            pass
+
     return -1
 
 def obstacle_distance(x, y):
@@ -74,9 +119,10 @@ def soft_boundary_force(x, y, max_force=0.3, boundary_margin=0.08):
     return fx, fy
 
 def usr(robot):
+    init_log()
     my_id = get_id(robot)
     robot.set_led(0, 180, 180)  # cyan normal
-    print(f"Robot {my_id} starting: Concentric Circle Formation")
+    logw(f"Robot {my_id} starting: Concentric Circle Formation")
 
     # ====== PHASE 1: Gossip to discover all robots ======
     POSE_FMT  = "ffi"  # float x, float y, int id
@@ -115,7 +161,7 @@ def usr(robot):
     total_robots = len(poses)
     
     if total_robots == 0:
-        print(f"Robot {my_id}: No robots discovered, using default position")
+        logw(f"Robot {my_id}: No robots discovered, using default position")
         # Fallback: just go to some position on circle
         target_angle = 0.0
     else:
@@ -127,17 +173,17 @@ def usr(robot):
         angle_spacing = 2 * math.pi / total_robots
         target_angle = my_index * angle_spacing
         
-        print(f"Robot {my_id}: {total_robots} robots, my index={my_index}, target_angle={target_angle:.3f}")
+        logw(f"Robot {my_id}: {total_robots} robots, my index={my_index}, target_angle={target_angle:.3f}")
 
     # Calculate target position on circle
     target_x = CX + R_TARGET * math.cos(target_angle)
     target_y = CY + R_TARGET * math.sin(target_angle)
     
-    print(f"Robot {my_id} target: ({target_x:.3f}, {target_y:.3f})")
+    logw(f"Robot {my_id} target: ({target_x:.3f}, {target_y:.3f})")
 
     # ====== PHASE 3: Move to target positions ======
-    last_print_time = 0.0
-    PRINT_PERIOD = 2.0
+    last_logw_time = 0.0
+    logw_PERIOD = 2.0
     
     formation_achieved = False
 
@@ -283,8 +329,8 @@ def usr(robot):
 
         # Periodic status
         now = robot.get_clock()
-        if now - last_print_time > PRINT_PERIOD:
-            print(f"Robot {my_id}: pos [{x:.3f}, {y:.3f}], error={position_error:.3f}, neighbors={len(current_neighbors)}")
-            last_print_time = now
+        if now - last_logw_time > logw_PERIOD:
+            logw(f"Robot {my_id}: pos [{x:.3f}, {y:.3f}], error={position_error:.3f}, neighbors={len(current_neighbors)}")
+            last_logw_time = now
 
         robot.delay(40)
