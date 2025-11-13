@@ -1,8 +1,9 @@
 import math, struct
+
 # ===== Testbed bounds & center =====
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
-CX, CY = (-0.1, 0.475)
+CX, CY = (-0.1, 0.475)   # dancer center / nominal center
 
 # ===== Dancer no-go circle =====
 FEET = 0.3048
@@ -10,11 +11,13 @@ OBST_DIAM_FT = 1.0
 OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET   # ~0.1524 m
 OBST_MARGIN  = 0.03
 SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN
-OBST_CX, OBST_CY = CX, CY  # obstacle centered on ring center
+OBST_CX, OBST_CY = CX, CY  # obstacle centered on dancer center (fixed)
+STOP_MSG = b"S"  # global emergency stop message
+
 
 # ===== Translation plan =====
-# MOVE_DIRE -1 means screen up which is viewer left +1 screen down (vertical motion in sim but horizontal irl)
-MOVE_DIR    = -1       
+# MOVE_DIR -1 means screen up (viewer left), +1 screen down
+MOVE_DIR    = -1
 SHIFT_RATE  = 0.18      # m/s center velocity
 STOP_MARGIN = 0.08      # keep ring this far from wall at stop
 
@@ -51,13 +54,6 @@ def safe_pose(robot):
         return float(p[0]), float(p[1]), float(p[2])
     return None
 
-# def get_id(robot):
-#     vid_attr = getattr(robot, "virtual_id", None)
-#     try:
-#         return vid_attr() if callable(vid_attr) else int(vid_attr or 0)
-#     except:
-#         return -1
-
 def get_id(robot):
     # Preferred: real robot's integer ID
     if hasattr(robot, "id"):
@@ -69,12 +65,11 @@ def get_id(robot):
     # Simulation / Python test harness: virtual_id()
     if hasattr(robot, "virtual_id"):
         try:
-            return robot.virtual_id()
+            return int(robot.virtual_id())
         except:
             pass
 
     return -1
-
 
 # ---------- GUI-parity helpers (from “glitch” style) ----------
 def soft_boundary_force(x, y, max_force=0.3, boundary_margin=0.08):
@@ -114,7 +109,58 @@ def soft_obstacle_force(x, y, max_force=OBST_MAX_SOFT_FORCE, buffer_width=OBST_W
 def usr(robot):
     my_id = get_id(robot)
     robot.set_led(0, 180, 180)  # cyan normal
-    print(f"Robot {my_id} starting: Translate with glitch-style GUI")
+    print(f"Robot {my_id} starting: Translate with centroid-based center")
+    global_stop = False  # if True, this robot will permanently stop
+
+
+    # ====== PHASE 0: gossip to estimate formation center ======
+    POSE_FMT  = "ffi"                     # float x, float y, int id
+    POSE_SIZE = struct.calcsize(POSE_FMT)
+
+    poses = {}  # id -> (x, y)
+
+    t_start = robot.get_clock()
+    gossip_duration = 2.0  # seconds to share poses
+
+    while robot.get_clock() - t_start < gossip_duration:
+        pose = safe_pose(robot)
+        if pose is not None:
+            x, y, _ = pose
+
+            # broadcast my pose (best-effort; ignore return value)
+            msg = struct.pack(POSE_FMT, x, y, my_id)
+            robot.send_msg(msg)
+
+            # store my own pose too
+            poses[my_id] = (x, y)
+
+        # receive and store others' poses
+        msgs = robot.recv_msg()
+        if msgs:
+            for m in msgs:
+                if not m:
+                    continue
+                try:
+                    px, py, pid = struct.unpack(POSE_FMT, m[:POSE_SIZE])
+                    poses[int(pid)] = (float(px), float(py))
+                except Exception:
+                    # ignore malformed messages
+                    pass
+
+        robot.delay(50)
+
+    # compute formation center; fall back to dancer center if no info
+    if poses:
+        xs = [p[0] for p in poses.values()]
+        ys = [p[1] for p in poses.values()]
+        form_cx = sum(xs) / len(xs)
+        form_cy = sum(ys) / len(ys)
+    else:
+        form_cx, form_cy = CX, CY
+
+    print(f"Robot {my_id}: formation center = ({form_cx:.3f}, {form_cy:.3f}), from {len(poses)} robots")
+
+    # ====== PHASE 1: the original translate-in-formation behavior ======
 
     # Per-robot state
     rel_off = None
@@ -127,6 +173,21 @@ def usr(robot):
     robot.delay(300)  # small settle
 
     while True:
+
+         # --- listen for global STOP from any robot ---
+        msgs = robot.recv_msg()
+        if msgs:
+            for m in msgs:
+                if m and m[:1] == STOP_MSG:  # first byte is 'S'
+                    global_stop = True
+
+        if global_stop:
+            # Hard global stop: hold position, maybe green to indicate "frozen"
+            robot.set_vel(0, 0)
+            robot.set_led(0, 255, 0)
+            robot.delay(40)
+            continue
+
         pose = safe_pose(robot)
         if pose is None:
             robot.set_vel(0,0)
@@ -135,18 +196,17 @@ def usr(robot):
         x, y, th = pose
 
         # --- CRITICAL STOPS (GUI parity) ---
-        if is_critical_obstacle(x, y):
+        if is_critical_obstacle(x, y) or is_critical_boundary(x, y):
+            # Broadcast an emergency STOP to the swarm
+            robot.send_msg(STOP_MSG)
+            global_stop = True
+
             robot.set_vel(0, 0)
             robot.set_led(255, 50, 0)  # orange/red = critical
-            print(f"ROBOT {my_id} OBSTACLE STOP at [{x:.3f}, {y:.3f}]")
+            print(f"ROBOT {my_id} EMERGENCY STOP at [{x:.3f}, {y:.3f}]")
             robot.delay(40)
             continue
-        if is_critical_boundary(x, y):
-            robot.set_vel(0, 0)
-            robot.set_led(255, 50, 0)  # orange/red = critical
-            print(f"ROBOT {my_id} CRITICAL STOP at [{x:.3f}, {y:.3f}]")
-            robot.delay(40)
-            continue
+
 
         # --- WARNINGS (yellow), otherwise cyan ---
         obst_r = obstacle_distance(x, y)
@@ -160,20 +220,36 @@ def usr(robot):
 
         # Lock initial offset & compute stop distance once
         if rel_off is None:
-            rel_off = (x - CX, y - CY)
+            # offset relative to *formation* center, not dancer center
+            rel_off = (x - form_cx, y - form_cy)
             R_form  = math.hypot(*rel_off)
 
-            # Wall-limited shift, but now in Y (vertical)
+            # Wall-limited shift, now in Y (vertical), based on formation center
+            # safety_buffer = 0.05
+            # if MOVE_DIR < 0:  # moving up (toward Y_MAX)
+            #     s_wall = max(0.0, (Y_MAX - STOP_MARGIN - safety_buffer - R_form) - form_cy)
+            # else:  # moving down (toward Y_MIN)
+            #     s_wall = max(0.0, form_cy - (Y_MIN + STOP_MARGIN + safety_buffer + R_form))
+
+            # # Obstacle limit based on bubble vs radius
+            # s_obst = max(0.0, R_form - SAFE_BUBBLE)
+            # s_stop = min(s_wall, s_obst)
+
+            # Wall-limited shift, now in Y (vertical), based on formation center
             safety_buffer = 0.05
             if MOVE_DIR < 0:  # moving up (toward Y_MAX)
-                s_wall = max(0.0, (Y_MAX - STOP_MARGIN - safety_buffer - R_form) - CY)
+                s_wall = max(0.0, (Y_MAX - STOP_MARGIN - safety_buffer - R_form) - form_cy)
             else:  # moving down (toward Y_MIN)
-                s_wall = max(0.0, CY - (Y_MIN + STOP_MARGIN + safety_buffer + R_form))
+                s_wall = max(0.0, form_cy - (Y_MIN + STOP_MARGIN + safety_buffer + R_form))
+
+            # For this translation, let the walls be the only limiter.
+            # Obstacle safety is handled by is_critical_obstacle(...) and soft forces.
+            s_stop = s_wall
 
 
-            # Obstacle limit based on bubble vs radius
-            s_obst = max(0.0, R_form - SAFE_BUBBLE)
-            s_stop = min(s_wall, s_obst)
+            
+
+
 
             # synced start half-second grid
             now = robot.get_clock()
@@ -194,10 +270,9 @@ def usr(robot):
         # Center shift
         s = min(max(0.0, t - t0) * SHIFT_RATE, s_stop)
 
-        # Moving center + rigid target (vertical translation)
-        Cx = CX
-        Cy = CY - MOVE_DIR * s   # MOVE_DIR=-1 => Cy increases (up)
-
+        # Moving center + rigid target (vertical translation) from formation center
+        Cx = form_cx
+        Cy = form_cy - MOVE_DIR * s   # MOVE_DIR=-1 => Cy increases (up)
 
         # keep center valid
         Cx = max(X_MIN + R_form + 0.08, min(X_MAX - R_form - 0.08, Cx))
@@ -213,7 +288,6 @@ def usr(robot):
 
         # feed-forward along the translate direction (now vertical)
         vy += -MOVE_DIR * SHIFT_RATE   # MOVE_DIR=-1 => vy += +SHIFT_RATE (up)
-
 
         # Radial lock to initial offset
         rx, ry = x - Cx, y - Cy
@@ -262,4 +336,5 @@ def usr(robot):
             last_print_time = now
 
         robot.delay(20)
+
 
