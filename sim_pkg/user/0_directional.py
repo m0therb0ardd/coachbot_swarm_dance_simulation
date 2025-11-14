@@ -1,14 +1,14 @@
 import math, struct, os 
 
-# ===== LOGGING (sim and hardware) =====
+# ----------------- LOGGING (sim and hardware) -----------------
 LOG = None
 
-# ===== Testbed bounds & center =====
+# ----------------- Testbed bounds & center -----------------
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
 CX, CY = (-0.1, 0.475)   # dancer center / nominal center
 
-# ===== Dancer no-go circle =====
+# ----------------- Dancer no-go circle -----------------
 FEET = 0.3048
 OBST_DIAM_FT = 1.0
 OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET   # ~0.1524 m
@@ -18,25 +18,25 @@ OBST_CX, OBST_CY = CX, CY  # obstacle centered on dancer center (fixed)
 STOP_MSG = b"S"  # global emergency stop message
 
 
-# ===== Translation plan =====
+# ----------------- Translation plan -----------------
 # MOVE_DIR -1 means screen up (viewer left), +1 screen down
 MOVE_DIR    = 1
 SHIFT_RATE  = 0.18      # m/s center velocity
 STOP_MARGIN = 0.08      # keep ring this far from wall at stop
 
-# ===== Drive control =====
+# ----------------- Drive control -----------------
 MAX_WHEEL = 40
 TURN_K    = 3.0
 FWD_FAST  = 0.8
 FWD_SLOW  = 0.30
 EPS       = 1e-3
 
-# ===== Rigid-body locking gains =====
+# ----------------- Rigid-body locking gains -----------------
 KX = 1.2
 KY = 2.0
 KR = 2.6
 
-# ===== “GUI parity” options =====
+# ----------------- “GUI parity” options -----------------
 WARN_MARGIN_BOUNDARY = 0.05   # yellow warn margin (matches glitch feel)
 CRIT_MARGIN_BOUNDARY = 0.02   # hard-stop margin
 USE_SOFT_OBST_FORCE  = False  # keep False to preserve your original trajectory
@@ -154,7 +154,7 @@ def usr(robot):
     global_stop = False  # if True, this robot will permanently stop
 
 
-    # ====== PHASE 0: gossip to estimate formation center ======
+    # -----------------= PHASE 0: gossip to estimate formation center -----------------=
     POSE_FMT  = "ffi"                     # float x, float y, int id
     POSE_SIZE = struct.calcsize(POSE_FMT)
 
@@ -201,7 +201,7 @@ def usr(robot):
 
     logw(f"Robot {my_id}: formation center = ({form_cx:.3f}, {form_cy:.3f}), from {len(poses)} robots")
 
-    # ====== PHASE 1: the original translate-in-formation behavior ======
+    # -----------------= PHASE 1: the original translate-in-formation behavior -----------------=
 
     # Per-robot state
     rel_off = None

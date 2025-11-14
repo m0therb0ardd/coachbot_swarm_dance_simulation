@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 FLOAT — Sustained + Indirect (Boids + Laban)
-- Simulation: uses robot.id and print()
+- Simulation: uses robot.id and logw()
 - Hardware: uses robot.virtual_id() and experiment_log.txt
 - Behavior: soft boids flock, gentle arcs, meandering attention, low jerk
 """
@@ -10,9 +10,47 @@ import math
 import os
 import random
 
-# =========================
+# ----------------- Logging (sim + hardware) -----------------
+LOG = None   # global log handle
+
+def init_log():
+    """
+    Try to open experiment_log.txt in a hardware-like way.
+    If it fails (e.g., sim with no FS), we just fall back to print only.
+    """
+    global LOG
+    if LOG is not None:
+        return
+    try:
+        # line-buffered like your FLOAT HW script
+        LOG = open("experiment_log.txt", "a", 1)
+    except Exception:
+        LOG = None
+
+def logw(msg):
+    """
+    Write to log file (if available) AND print to stdout.
+    Safe in both sim and hardware.
+    """
+    if not isinstance(msg, str):
+        msg = str(msg)
+    line = msg if msg.endswith("\n") else msg + "\n"
+
+    # Log file (hardware) if available
+    if LOG is not None:
+        try:
+            LOG.write(line)
+            LOG.flush()
+            os.fsync(LOG.fileno())
+        except Exception:
+            pass
+
+    # Always also print (sim / console)
+    print(line.rstrip("\n"))
+
+# -------------------------------------------------------------------------------------
 # Arena / obstacle geometry
-# =========================
+# -------------------------------------------------------------------------------------
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
 
@@ -23,9 +61,9 @@ OBST_MARGIN  = 0.03
 SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN
 OBST_CX, OBST_CY = (-0.1, 0.475)
 
-# ====================
+# --------------------------------------------------------------------
 # Drive / control caps
-# ====================
+# --------------------------------------------------------------------
 MAX_WHEEL = 35
 TURN_K    = 3.0
 FWD_FAST  = 0.80
@@ -36,9 +74,9 @@ EPS       = 1e-3
 # Wheel command smoothing (EMA) for floaty feel
 CMD_SMOOTH  = 0.30
 
-# =================
+# ---------------------------------------------------==
 # Safety rails
-# =================
+# ---------------------------------------------------==
 SOFT_MARGIN     = 0.08
 CRIT_MARGIN     = 0.02
 SOFT_MAX_FORCE  = 0.35
@@ -49,56 +87,55 @@ REPULSE_GAIN    = 0.10
 HARD_REP_RADIUS = 0.18
 HARD_REP_GAIN   = 0.26
 
-# ============
+# ----------------------------------==
 # Boids + Laban
-# ============
-# — Tune these for other modes! —
+# ----------------------------------==
 LABAN = {
-    "time_sustained": 0.85,  # 0 sudden … 1 sustained  (low accel/jerk, smoother turns)
-    "space_indirect": 0.80,  # 0 direct … 1 indirect   (meander, curved paths)
-    "weight_light":   0.80,  # 0 heavy  … 1 light      (lower raw speeds)
-    "flow_free":      0.65,  # 0 bound  … 1 free       (more variability)
+    "time_sustained": 0.85,  # 0 sudden … 1 sustained
+    "space_indirect": 0.80,  # 0 direct … 1 indirect
+    "weight_light":   0.80,  # 0 heavy  … 1 light
+    "flow_free":      0.65,  # 0 bound  … 1 free
 }
 
-# Base boids gains (scaled below by LABAN where appropriate)
+# Base boids gains
 BOIDS = {
-    "sep_radius": 0.40,  "sep_gain": 0.60,     # firm close-in separation
-    "ali_radius": 0.90,  "ali_gain": 0.35,     # moderate alignment
-    "coh_radius": 1.10,  "coh_gain": 0.18,     # light cohesion → loose cloud
+    "sep_radius": 0.40,  "sep_gain": 0.60,
+    "ali_radius": 0.90,  "ali_gain": 0.35,
+    "coh_radius": 1.10,  "coh_gain": 0.18,
 }
 
 # Indirectness ingredients
-ARC_BIAS_GAIN     = 0.25   # bias to turn slightly perpendicular to velocity
-WAYPOINT_GAIN     = 0.15   # gentle pull to a drifting virtual waypoint
+ARC_BIAS_GAIN     = 0.25
+WAYPOINT_GAIN     = 0.15
 WAYPOINT_DRIFT    = 0.015  # (not explicitly used; kept for clarity)
 
 # Sustained feel caps
-MAX_TURN_RAD      = 0.65 * (0.6 + 0.4*LABAN["time_sustained"])  # cap on heading step
-ACCEL_CAP         = 0.08 * (0.5 + 0.5*LABAN["time_sustained"])  # cap on |Δv|
-VEL_EMA           = 0.70 * LABAN["time_sustained"] + 0.20       # stronger EMA if sustained
+MAX_TURN_RAD      = 0.65 * (0.6 + 0.4*LABAN["time_sustained"])
+ACCEL_CAP         = 0.08 * (0.5 + 0.5*LABAN["time_sustained"])
+VEL_EMA           = 0.70 * LABAN["time_sustained"] + 0.20
 
 # Speed scaling from "weight_light"
-FLOAT_SPEED_SCALE = 0.65 + 0.25*LABAN["weight_light"]  # ~0.65–0.90 of your FWD scaling
+FLOAT_SPEED_SCALE = 0.65 + 0.25*LABAN["weight_light"]
 
 # Keep leftward intention, soft
 LEFT_INTENT = -0.06
 
 # Flow field (for indirectness)
-NOISE_GAIN  = 0.10    
+NOISE_GAIN  = 0.10
 NOISE_SCALE = 0.35
 NOISE_SPEED = 0.05
 
-# ======
+# -----------------=
 # Timing
-# ======
-PRINT_PERIOD = 2.0
+# -----------------=
+logw_PERIOD = 2.0
 MAX_RUNTIME  = 55.0
 LOOP_DT_MS   = 40  # 25 Hz
 
 
-# =========================
+# -------------------------------------------------------------------------------------
 # Helpers
-# =========================
+# -------------------------------------------------------------------------------------
 def clamp(v, lo, hi):
     if v < lo: return lo
     if v > hi: return hi
@@ -108,6 +145,26 @@ def wrap_angle(a):
     while a >  math.pi: a -= 2.0*math.pi
     while a <= -math.pi: a += 2.0*math.pi
     return a
+
+def get_id(robot):
+    """
+    Prefer hardware virtual_id(), fall back to sim .id.
+    """
+    # Real hardware ID
+    if hasattr(robot, "virtual_id") and callable(robot.virtual_id):
+        try:
+            return int(robot.virtual_id())
+        except Exception:
+            pass
+
+    # Simulation ID
+    if hasattr(robot, "id"):
+        try:
+            return int(robot.id)
+        except Exception:
+            pass
+
+    return -1
 
 def safe_pose(robot):
     p = robot.get_pose()
@@ -166,27 +223,6 @@ def try_get_swarm_poses(robot):
                 pass
     return []
 
-def detect_sim(robot):
-    has_id = hasattr(robot, "id")
-    try:
-        _ = robot.id() if callable(getattr(robot, "id", None)) else getattr(robot, "id", None)
-        return has_id
-    except:
-        return False
-
-def get_robot_id(robot, sim_mode):
-    if sim_mode:
-        rid_attr = getattr(robot, "id", None)
-        try:
-            return rid_attr() if callable(rid_attr) else int(rid_attr)
-        except:
-            return -1
-    else:
-        try:
-            return robot.virtual_id()
-        except:
-            return -1
-
 def unit(x, y):
     n = math.hypot(x, y)
     if n < 1e-9: return 0.0, 0.0
@@ -221,11 +257,15 @@ def boids_vectors(robot, neighbors, sep_R, ali_R, coh_R):
     cx = cy = 0.0; cn = 0
 
     for item in neighbors or []:
-        if not (isinstance(item, (list, tuple)) and len(item) >= 3): continue
-        if len(item) == 4: nid, nx, ny, nth = item
-        else: nx, ny, nth = item[0], item[1], item[2]
+        if not (isinstance(item, (list, tuple)) and len(item) >= 3): 
+            continue
+        if len(item) == 4:
+            nid, nx, ny, nth = item
+        else:
+            nx, ny, nth = item[0], item[1], item[2]
         dx = rx - nx; dy = ry - ny; d2 = dx*dx + dy*dy
-        if d2 < 1e-12: continue
+        if d2 < 1e-12: 
+            continue
 
         # separation
         if d2 < sep_R*sep_R:
@@ -255,27 +295,16 @@ def boids_vectors(robot, neighbors, sep_R, ali_R, coh_R):
     return (sx, sy), (ax, ay), (cx, cy)
 
 
-# =========================
+# -------------------------------------------------------------------------------------
 # Main entrypoint
-# =========================
+# -------------------------------------------------------------------------------------
 def usr(robot):
+    init_log()
     robot.delay(3000)
 
-    sim_mode = detect_sim(robot)
-    rid = get_robot_id(robot, sim_mode)
-
-    # Logging
-    if sim_mode:
-        def logw(s): print(s)
-        logw("FLOAT(SIM): I am robot %s" % str(rid))
-    else:
-        log_main = open("experiment_log.txt", "a")
-        def logw(s):
-            if not s.endswith("\n"): s += "\n"
-            log_main.write(s); log_main.flush()
-            try: os.fsync(log_main.fileno())
-            except: pass
-        logw("FLOAT(HW): I am robot %s" % str(rid))
+    # Simple sim/hardware detection
+    sim_mode = not hasattr(robot, "virtual_id")
+    rid = get_id(robot)
 
     # Randomness per robot
     try:
@@ -299,6 +328,10 @@ def usr(robot):
     last_vx = 0.0
     last_vy = 0.0
 
+    # Boot message
+    mode_str = "SIM" if sim_mode else "HW"
+    logw("[FLOAT {}] boot id={}".format(mode_str, rid))
+
     try:
         while True:
             now = robot.get_clock() if has_clock else (start_time + acc_time/1000.0)
@@ -319,7 +352,7 @@ def usr(robot):
             # Safety lights + checks
             bstat = soft_boundary_check(x, y)
             if bstat == 2:
-                logw("CRITICAL: Robot %s at boundary [%.3f, %.3f]" % (str(rid), x, y))
+                logw("CRITICAL: Robot {} at boundary [{:.3f}, {:.3f}]".format(rid, x, y))
                 robot.set_vel(0, 0); robot.set_led(255, 0, 0)
                 break
             elif bstat == 1:
@@ -329,15 +362,15 @@ def usr(robot):
                 robot.set_led(0, breathe, breathe)
 
             if is_critical_obstacle(x, y, 0.0):
-                logw("CRITICAL: Robot %s inside obstacle [%.3f, %.3f]" % (str(rid), x, y))
+                logw("CRITICAL: Robot {} inside obstacle [{:.3f}, {:.3f}]".format(rid, x, y))
                 robot.set_vel(0, 0); robot.set_led(255, 0, 0)
                 robot.delay(LOOP_DT_MS)
                 if not has_clock: acc_time += LOOP_DT_MS
                 continue
 
-            # ================================
+            # ------------------------------------------------------------------------------------------------------==
             # Base field composition (Boids+Laban)
-            # ================================
+            # ------------------------------------------------------------------------------------------------------==
             # Walls & obstacle softness
             bfx, bfy = soft_boundary_force(x, y)
             ofx, ofy = soft_obstacle_force(x, y)
@@ -364,12 +397,12 @@ def usr(robot):
             else:
                 sep_x = sep_y = ali_x = ali_y = coh_x = coh_y = 0.0
                 if not told_no_swarm_api:
-                    logw("Robot %s: no swarm pose API; proceeding without alignment/cohesion" % str(rid))
+                    logw("Robot {}: no swarm pose API; proceeding without alignment/cohesion".format(rid))
                     told_no_swarm_api = True
 
             # Gain scaling with Laban “flow_free”
-            sep_g = BOIDS["sep_gain"]                                  # keep firm
-            ali_g = BOIDS["ali_gain"] * (0.8 + 0.4*LABAN["flow_free"]) # a touch freer
+            sep_g = BOIDS["sep_gain"]
+            ali_g = BOIDS["ali_gain"] * (0.8 + 0.4*LABAN["flow_free"])
             coh_g = BOIDS["coh_gain"] * (0.6 + 0.4*LABAN["flow_free"])
 
             # Compose desired velocity (pre-limits)
@@ -394,9 +427,9 @@ def usr(robot):
             vx += wp_gain * wpx
             vy += wp_gain * wpy
 
-            # ================================
+            # ------------------------------------------------------------------------------------------------------==
             # Sustained feel: accel & turn caps, EMA
-            # ================================
+            # ------------------------------------------------------------------------------------------------------==
             # Accel cap
             dvx = vx - last_vx
             dvy = vy - last_vy
@@ -442,9 +475,9 @@ def usr(robot):
             robot.set_vel(left, right)
 
             # Periodic status
-            if int(now) != last_log_sec and (t % PRINT_PERIOD) < (LOOP_DT_MS/1000.0 + 0.02):
+            if int(now) != last_log_sec and (t % logw_PERIOD) < (LOOP_DT_MS/1000.0 + 0.02):
                 msg = "FLOAT(SIM)" if sim_mode else "FLOAT(HW)"
-                logw("%s %s pos [%.3f, %.3f]" % (msg, str(rid), x, y))
+                logw("{} {} pos [{:.3f}, {:.3f}]".format(msg, rid, x, y))
                 last_log_sec = int(now)
 
             robot.delay(LOOP_DT_MS)
@@ -456,23 +489,28 @@ def usr(robot):
             robot.set_led(255, 0, 0)
         except:
             pass
-        if sim_mode:
-            print("ERROR(FLOAT SIM): %s" % str(e))
-        else:
-            logw("ERROR(FLOAT HW): %s" % str(e))
+        tag = "SIM" if sim_mode else "HW"
+        logw("ERROR(FLOAT {}): {}".format(tag, repr(e)))
         raise
     finally:
-        final_time = (robot.get_clock() if hasattr(robot, "get_clock") else (start_time + acc_time/1000.0))
+        final_time = (robot.get_clock() if hasattr(robot, "get_clock") 
+                      else (start_time + acc_time/1000.0))
         lx, ly = (last_pose if last_pose else (float('nan'), float('nan')))
         try:
             robot.set_vel(0, 0)
         except:
             pass
-        msg = "FLOAT %s finished at [%.3f, %.3f] after %.1fs" % (str(rid), lx, ly, final_time - (start_time if hasattr(robot, "get_clock") else 0.0))
-        if sim_mode:
-            print(msg)
-        else:
-            logw(msg)
-            try: log_main.close()
-            except: pass
 
+        msg = "FLOAT {} finished at [{:.3f}, {:.3f}] after {:.1f}s".format(
+            rid, lx, ly, final_time - (start_time if hasattr(robot, "get_clock") else 0.0)
+        )
+        logw(msg)
+
+        # Close log file on hardware if we opened it
+        global LOG
+        if LOG is not None:
+            try:
+                LOG.close()
+            except:
+                pass
+            LOG = None

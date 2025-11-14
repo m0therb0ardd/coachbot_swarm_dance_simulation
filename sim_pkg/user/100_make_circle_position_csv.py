@@ -1,13 +1,13 @@
 # sim_pkg/user/make_circle_position_csv.py
 import math, csv, os, sys
 
-# ===== Testbed bounds (meters) =====
+# ----------------- Testbed bounds (meters) -----------------
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
 CX = (X_MIN + X_MAX) / 2.0    # -0.1
 CY = (Y_MIN + Y_MAX) / 2.0    #  0.475
 
-# ===== Dancer no-go circle (1-foot DIAMETER) =====
+# ----------------- Dancer no-go circle (1-foot DIAMETER) -----------------
 # FEET = 0.3048
 FEET = 1.2
 OBST_DIAM_FT = 1.0
@@ -15,7 +15,7 @@ OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET   # 0.1524 m
 OBST_MARGIN  = 0.03                        # small extra collar (tweakable)
 SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN   # ~0.1824 m
 
-# ===== Ring + spacing =====
+# ----------------- Ring + spacing -----------------
 N_BOTS       = 11                         # IDs 0..4
 MIN_SPACING  = 0.25                        # per testbed rule (m)
 WALL_MARGIN  = 0.08                        # stay off walls by this much

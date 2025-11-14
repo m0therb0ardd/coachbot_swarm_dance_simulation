@@ -2,13 +2,51 @@
 # Single-Ring Encircle: Velocity-based spacing using P2P
 # Bots adjust speed based on distance to neighbors to achieve equal spacing
 
-import math, struct, random
+import math, struct, random, os
 
-# ===== Arena =====
+# ----------------- Logging (sim + hardware) -----------------
+LOG = None   # global log handle
+
+def init_log():
+    """
+    Try to open experiment_log.txt in a hardware-like way.
+    If it fails (e.g., sim with no FS), we just fall back to logw only.
+    """
+    global LOG
+    if LOG is not None:
+        return
+    try:
+        # line-buffered like your FLOAT HW script
+        LOG = open("experiment_log.txt", "a", 1)
+    except Exception:
+        LOG = None
+
+def logw(msg):
+    """
+    Write to log file (if available) AND logw to stdout.
+    Safe in both sim and hardware.
+    """
+    if not isinstance(msg, str):
+        msg = str(msg)
+    line = msg if msg.endswith("\n") else msg + "\n"
+
+    # Log file (hardware) if available
+    if LOG is not None:
+        try:
+            LOG.write(line)
+            LOG.flush()
+            os.fsync(LOG.fileno())
+        except Exception:
+            pass
+
+    # Always also logw (sim / console)
+    print(line.rstrip("\n"))
+
+# ----------------- Arena -----------------
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
 
-# ===== Dancer no-go circle =====
+# ----------------- Dancer no-go circle -----------------
 FEET = 0.3048
 OBST_DIAM_FT = 1.0
 OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET
@@ -16,30 +54,30 @@ OBST_MARGIN  = 0.03
 SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN
 CX, CY = (-0.1, 0.475)
 
-# ===== Single ring parameters =====
+# ----------------- Single ring parameters -----------------
 R_TARGET = SAFE_BUBBLE + 0.33  # Single target radius
 DIRECTION = +1  # CCW rotation (use -1 for CW)
 
-# ===== Motion / spacing =====
+# ----------------- Motion / spacing -----------------
 V_TANGENT_BASE = 0.26
 K_R, RADIAL_CLAMP = 1.3, 0.12
 MIN_LINEAR_SEP = 0.18
 IDEAL_ANGULAR_SEP = 2 * math.pi / 8  # Assuming ~8 bots, adjust as needed
 
-# ===== Velocity adjustment gains =====
+# ----------------- Velocity adjustment gains -----------------
 ANGULAR_VELOCITY_GAIN = 0.8  # How aggressively to adjust speed based on spacing
 MAX_VELOCITY_ADJUSTMENT = 0.15  # Max speed change
 
-# ===== Boundary cushion =====
+# ----------------- Boundary cushion -----------------
 SOFT_MARGIN, CRIT_MARGIN, SOFT_MAX_FORCE = 0.08, 0.05, 0.35  # Increased crit margin
 
-# ===== Drive model =====
+# ----------------- Drive model -----------------
 MAX_WHEEL, TURN_K = 35, 3.0
 FWD_FAST, FWD_SLOW, FWD_MIN = 0.80, 0.30, 0.40
 CMD_SMOOTH, EPS, DT_MS = 0.20, 1e-3, 40
-PRINT_PERIOD = 2.0
+logw_PERIOD = 2.0
 
-# ===== Heartbeats (pose) =====
+# ----------------- Heartbeats (pose) -----------------
 HB_FMT = 'fffi'  # x,y,theta, vid
 HB_BYTES = struct.calcsize(HB_FMT)
 HB_DT, STALE_S = 0.12, 0.8
@@ -78,18 +116,19 @@ def try_get_swarm_poses(robot):
     return []
 
 def usr(robot):
+    init_log()
     robot.delay(800)
     
     # SIMULATION: Use robot.id (without parentheses)
     rid = robot.id
-    print(f"Bot starting with ID: {rid}")
+    logw(f"Bot starting with ID: {rid}")
     
     random.seed(rid * 1103515245 & 0xFFFFFFFF)
 
     # neighbors: id -> (x,y,theta,t_last)
     nbrs = {}
     last_hb = -1e9
-    last_print = 0.0
+    last_logw = 0.0
     lastL = lastR = 0
 
     # detection flags
@@ -251,9 +290,9 @@ def usr(robot):
         #             vx += radial * urx
         #             vy += radial * ury
                     
-        #             # Debug print
-        #             if now - last_print > PRINT_PERIOD:
-        #                 print(f"Bot {rid}: front_gap={front_gap:.3f}, behind_gap={behind_gap:.3f}, adj={velocity_adjustment:.3f}")
+        #             # Debug logw
+        #             if now - last_logw > logw_PERIOD:
+        #                 logw(f"Bot {rid}: front_gap={front_gap:.3f}, behind_gap={behind_gap:.3f}, adj={velocity_adjustment:.3f}")
 
         # Replace the current velocity-based spacing section with:
         if len(nbrs) > 0:
@@ -355,10 +394,10 @@ def usr(robot):
         lastL, lastR = left, right
         robot.set_vel(left, right)
 
-        # occasional print
-        if now - last_print > PRINT_PERIOD:
-            print(f"[velocity_spacing] id={rid} neighbors={len(nbrs)} radius_error={R_TARGET - r:.3f}")
-            last_print = now
+        # occasional logw
+        if now - last_logw > logw_PERIOD:
+            logw(f"[velocity_spacing] id={rid} neighbors={len(nbrs)} radius_error={R_TARGET - r:.3f}")
+            last_logw = now
 
         robot.delay(DT_MS)
 

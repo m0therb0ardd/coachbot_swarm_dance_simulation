@@ -1,7 +1,46 @@
 # -*- coding: utf-8 -*-
 # FLOAT (SIM): light • sustained • indirect
 # Smooth, curving motion with low jerk and gentle leftward migration.
-import math, struct, random
+import math, struct, random, os
+
+# ----------------- Logging (sim + hardware) -----------------
+LOG = None   # global log handle
+
+def init_log():
+    """
+    Try to open experiment_log.txt in a hardware-like way.
+    If it fails (e.g., sim with no FS), we just fall back to logw only.
+    """
+    global LOG
+    if LOG is not None:
+        return
+    try:
+        # line-buffered like your FLOAT HW script
+        LOG = open("experiment_log.txt", "a", 1)
+    except Exception:
+        LOG = None
+
+def logw(msg):
+    """
+    Write to log file (if available) AND logw to stdout.
+    Safe in both sim and hardware.
+    """
+    if not isinstance(msg, str):
+        msg = str(msg)
+    line = msg if msg.endswith("\n") else msg + "\n"
+
+    # Log file (hardware) if available
+    if LOG is not None:
+        try:
+            LOG.write(line)
+            LOG.flush()
+            os.fsync(LOG.fileno())
+        except Exception:
+            pass
+
+    # Always also logw (sim / console)
+    print(line.rstrip("\n"))
+
 
 # --- field & obstacle (meters) ---
 X_MIN, X_MAX = -1.2, 1.0
@@ -78,6 +117,7 @@ def safe_pose(robot):
     return None
 
 def usr(robot):
+    init_log()
     robot.delay(400)
     try: vid = int(robot.id())
     except: vid = 0

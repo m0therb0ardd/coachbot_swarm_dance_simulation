@@ -6,7 +6,7 @@
 
 # import math, struct, random
 
-# # ===== Testbed bounds & dancer =====
+# # ----------------- Testbed bounds & dancer -----------------
 # X_MIN, X_MAX = -1.2, 1.0
 # Y_MIN, Y_MAX = -1.4, 2.35
 # CX, CY = (-0.1, 0.475)
@@ -18,7 +18,7 @@
 # SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN
 # OBST_CX, OBST_CY = CX, CY
 
-# # ===== Drive / loop (global defaults) =====
+# # ----------------- Drive / loop (global defaults) -----------------
 # MAX_WHEEL   = 40
 # TURN_K      = 3.0
 # CMD_SMOOTH  = 0.20
@@ -29,15 +29,15 @@
 # PRINT_PERIOD= 2.0
 # EPS         = 1e-3
 
-# # ===== Boundary UI parity =====
+# # ----------------- Boundary UI parity -----------------
 # WARN_MARGIN_BOUNDARY = 0.05
 # CRIT_MARGIN_BOUNDARY = 0.02
 
-# # ===== Soft obstacle buffer (used in every phase) =====
+# # ----------------- Soft obstacle buffer (used in every phase) -----------------
 # OBST_WARN_BUFFER   = 0.10
 # OBST_MAX_SOFT_FORCE= 0.55
 
-# # ===== Translate (left/right) gains =====
+# # ----------------- Translate (left/right) gains -----------------
 # SHIFT_RATE  = 0.18
 # STOP_MARGIN = 0.08
 # KX, KY, KR  = 1.2, 2.0, 2.6
@@ -48,11 +48,11 @@
 # ORIENT_HOLD   = 0.25         # s: stay within tol before we launch
 # ORIENT_FWD    = 0.00         # forward factor during orient (0 = turn-in-place)
 
-# # ===== Glitch =====
+# # ----------------- Glitch -----------------
 # JITTER   = 0.45
 # NEAR_SEP = 0.20
 
-# # ===== Encircle (single ring) =====
+# # ----------------- Encircle (single ring) -----------------
 # R_RING       = SAFE_BUBBLE + 0.34
 # DIR          = +1                    # +1 CCW, -1 CW
 # SAME_RING_TOL= 0.12
@@ -69,7 +69,7 @@
 # HB_BYTES = struct.calcsize(HB_FMT)
 # HB_DT, STALE_S = 0.12, 0.8
 
-# # ===== FLOAT (sim-friendly) =====
+# # ----------------- FLOAT (sim-friendly) -----------------
 # FLOAT_MAX_WHEEL = 35
 # FLOAT_TURN_K    = 2.2
 # FLOAT_FWD_BASE  = 0.65
@@ -89,7 +89,7 @@
 # CRIT_MARGIN = 0.02
 # SOFT_MAX_F  = 0.35
 
-# # ===== Punch =====
+# # ----------------- Punch -----------------
 # WAVE_PERIOD = 3.0
 # AIM_TIME    = 0.18
 # CHARGE_TIME = 0.55
@@ -105,7 +105,7 @@
 # K_SEP_PUNCH = 0.48
 # K_ALI_PUNCH = 0.10
 
-# # ===== Phase schedule (seconds) =====
+# # ----------------- Phase schedule (seconds) -----------------
 # PHASES = [
 #     ("move_left",  20.0),
 #     ("move_right", 20.0),
@@ -294,7 +294,7 @@
 #             print(f"[seq] id={rid} → phase={phase_name}")
 #             phase_name_prev = phase_name
 
-#         # ===== hard safety (applies to all phases) =====
+#         # ----------------- hard safety (applies to all phases) -----------------
 #         if is_critical_obstacle(x, y) or is_critical_boundary(x, y):
 #             robot.set_led(100,0,0); robot.set_vel(0,0); robot.delay(DT_MS); continue
 
@@ -307,7 +307,7 @@
 #         fwd = FWD_BASE
 #         led = (0, 180, 180)
 
-#         # ======== MOVE LEFT (GLOBAL rigid-body shift) ========
+#         # -----------------=== MOVE LEFT (GLOBAL rigid-body shift) -----------------===
 #         if phase_name == "move_left":
 #             MOVE_DIR = -1
 
@@ -382,7 +382,7 @@
 #             lastL, lastR = left, right
 #             robot.set_vel(left, right)
 
-#         # ======== MOVE RIGHT (ORIENT → GLOBAL SHIFT) ========
+#         # -----------------=== MOVE RIGHT (ORIENT → GLOBAL SHIFT) -----------------===
 #         elif phase_name == "move_right":
 #             MOVE_DIR = +1
 
@@ -487,7 +487,7 @@
 #                 lastL, lastR = left, right
 #                 robot.set_vel(left, right)
 
-#         # ======== GLITCH ========
+#         # -----------------=== GLITCH -----------------===
 #         elif phase_name == "glitch":
 #             led = (100,0,100)
 #             vx = bfx + ofx + random.uniform(-JITTER, JITTER)
@@ -512,7 +512,7 @@
 #             lastL, lastR = left, right
 #             robot.set_vel(left, right)
 
-#         # ======== ENCIRCLE ========
+#         # -----------------=== ENCIRCLE -----------------===
 #         elif phase_name == "encircle":
 #             if (now - last_hb) >= HB_DT:
 #                 try: robot.send_msg(struct.pack(HB_FMT, float(x), float(y), float(th), int(rid)))
@@ -589,7 +589,7 @@
 #             lastL, lastR = left, right
 #             robot.set_vel(left, right)
 
-#         # ======== FLOAT (low-jerk) ========
+#         # -----------------=== FLOAT (low-jerk) -----------------===
 #         elif phase_name == "float":
 #             # boundary LEDs
 #             bstat = 2 if is_critical_boundary(x,y,CRIT_MARGIN) else (1 if (
@@ -653,7 +653,7 @@
 #             float_lastL, float_lastR = left, right
 #             robot.set_vel(left, right)
 
-#         # ======== PUNCH ========
+#         # -----------------=== PUNCH -----------------===
 #         else:
 #             led = (100,0,70) if punch_state=="charge" else (100,100,0)
 #             robot.set_led(*[int(clamp(c,0,100)) for c in led])
@@ -730,7 +730,7 @@
 #             lastL, lastR = left, right
 #             robot.set_vel(left, right)
 
-#         # ===== LEDs + sparse logging =====
+#         # ----------------- LEDs + sparse logging -----------------
 #         robot.set_led(*[int(clamp(c,0,100)) for c in led])
 #         if now - last_print > PRINT_PERIOD:
 #             print(f"[seq] id={rid} phase={phase_name} t={t:5.1f}s")
@@ -747,11 +747,11 @@
 
 # import math, struct, random
 
-# # ===== Arena =====
+# # ----------------- Arena -----------------
 # X_MIN, X_MAX = -1.2, 1.0
 # Y_MIN, Y_MAX = -1.4, 2.35
 
-# # ===== Dancer no-go circle =====
+# # ----------------- Dancer no-go circle -----------------
 # FEET = 0.3048
 # OBST_DIAM_FT = 1.0
 # OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET
@@ -759,27 +759,27 @@
 # SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN
 # CX, CY = (-0.1, 0.475)
 
-# # ===== Single ring parameters =====
+# # ----------------- Single ring parameters -----------------
 # R_TARGET = SAFE_BUBBLE + 0.33  # Single target radius
 # DIRECTION = +1  # CCW rotation
 
-# # ===== Motion / spacing =====
+# # ----------------- Motion / spacing -----------------
 # V_TANGENT_BASE = 0.26
 # K_R, RADIAL_CLAMP = 1.3, 0.12
 # ANG_P_GAIN, ANG_D_GAIN = 2.0, 0.5  # PD control for angle
 # MIN_LINEAR_SEP = 0.15
 # COLLISION_SEP = 0.10
 
-# # ===== Boundary cushion =====
+# # ----------------- Boundary cushion -----------------
 # SOFT_MARGIN, CRIT_MARGIN, SOFT_MAX_FORCE = 0.08, 0.02, 0.35
 
-# # ===== Drive model =====
+# # ----------------- Drive model -----------------
 # MAX_WHEEL, TURN_K = 35, 3.0
 # FWD_FAST, FWD_SLOW, FWD_MIN = 0.80, 0.30, 0.40
 # CMD_SMOOTH, EPS, DT_MS = 0.20, 1e-3, 40
 # PRINT_PERIOD = 2.0
 
-# # ===== Heartbeats (pose+target_angle+state) =====
+# # ----------------- Heartbeats (pose+target_angle+state) -----------------
 # HB_FMT = 'fffifi'  # x,y,theta, target_angle, vid, state
 # HB_BYTES = struct.calcsize(HB_FMT)
 # HB_DT, STALE_S = 0.12, 0.8
@@ -1086,11 +1086,11 @@
 
 import math, struct, random
 
-# ===== Arena =====
+# ----------------- Arena -----------------
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
 
-# ===== Dancer no-go circle =====
+# ----------------- Dancer no-go circle -----------------
 FEET = 0.3048
 OBST_DIAM_FT = 1.0
 OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET
@@ -1098,27 +1098,27 @@ OBST_MARGIN  = 0.03
 SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN
 CX, CY = (-0.1, 0.475)
 
-# ===== Single ring parameters =====
+# ----------------- Single ring parameters -----------------
 R_TARGET = SAFE_BUBBLE + 0.33  # Single target radius
 DIRECTION = +1  # CCW rotation
 
-# ===== Motion / spacing =====
+# ----------------- Motion / spacing -----------------
 V_TANGENT_BASE = 0.26
 K_R, RADIAL_CLAMP = 1.3, 0.12
 ANG_P_GAIN, ANG_D_GAIN = 2.0, 0.5  # PD control for angle
 MIN_LINEAR_SEP = 0.15
 COLLISION_SEP = 0.10
 
-# ===== Boundary cushion =====
+# ----------------- Boundary cushion -----------------
 SOFT_MARGIN, CRIT_MARGIN, SOFT_MAX_FORCE = 0.08, 0.02, 0.35
 
-# ===== Drive model =====
+# ----------------- Drive model -----------------
 MAX_WHEEL, TURN_K = 35, 3.0
 FWD_FAST, FWD_SLOW, FWD_MIN = 0.80, 0.30, 0.40
 CMD_SMOOTH, EPS, DT_MS = 0.20, 1e-3, 40
 PRINT_PERIOD = 2.0
 
-# ===== Heartbeats (pose+target_angle+state) =====
+# ----------------- Heartbeats (pose+target_angle+state) -----------------
 HB_FMT = 'fffifi'  # x,y,theta, target_angle, vid, state
 HB_BYTES = struct.calcsize(HB_FMT)
 HB_DT, STALE_S = 0.12, 0.8

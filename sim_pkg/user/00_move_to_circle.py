@@ -1,6 +1,6 @@
 import math, struct, os
 
-# ===== Logging (sim + hardware) =====
+# ----------------- Logging (sim + hardware) -----------------
 LOG = None   # global log handle
 
 def init_log():
@@ -38,12 +38,12 @@ def logw(msg):
     # Always also print (sim / console)
     print(line.rstrip("\n"))
     
-# ===== Testbed bounds & center =====
+# ----------------- Testbed bounds & center -----------------
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
 CX, CY = (-0.1, 0.475)   # dancer center / nominal center
 
-# ===== Dancer no-go circle =====
+# ----------------- Dancer no-go circle -----------------
 FEET = 0.3048
 OBST_DIAM_FT = 1.0
 OBST_RADIUS  = 0.5 * OBST_DIAM_FT * FEET   # ~0.1524 m
@@ -51,18 +51,18 @@ OBST_MARGIN  = 0.03
 SAFE_BUBBLE  = OBST_RADIUS + OBST_MARGIN
 OBST_CX, OBST_CY = CX, CY  # obstacle centered on dancer center (fixed)
 
-# ===== Circle parameters =====
+# ----------------- Circle parameters -----------------
 R_TARGET = SAFE_BUBBLE + 0.33  # Target circle radius
 DIRECTION = 1  # CCW rotation
 
-# ===== Drive control =====
+# ----------------- Drive control -----------------
 MAX_WHEEL = 40
 TURN_K    = 3.0
 FWD_FAST  = 0.8
 FWD_SLOW  = 0.30
 EPS       = 1e-3
 
-# ===== Control gains =====
+# ----------------- Control gains -----------------
 K_RADIAL = 1.5    # Gain for radial positioning
 K_ANGULAR = 2.0   # Gain for angular positioning
 
@@ -124,7 +124,7 @@ def usr(robot):
     robot.set_led(0, 180, 180)  # cyan normal
     logw(f"Robot {my_id} starting: Concentric Circle Formation")
 
-    # ====== PHASE 1: Gossip to discover all robots ======
+    # -----------------= PHASE 1: Gossip to discover all robots -----------------=
     POSE_FMT  = "ffi"  # float x, float y, int id
     POSE_SIZE = struct.calcsize(POSE_FMT)
 
@@ -157,7 +157,7 @@ def usr(robot):
 
         robot.delay(50)
 
-    # ====== PHASE 2: Assign target positions on circle ======
+    # -----------------= PHASE 2: Assign target positions on circle -----------------=
     total_robots = len(poses)
     
     if total_robots == 0:
@@ -181,7 +181,7 @@ def usr(robot):
     
     logw(f"Robot {my_id} target: ({target_x:.3f}, {target_y:.3f})")
 
-    # ====== PHASE 3: Move to target positions ======
+    # -----------------= PHASE 3: Move to target positions -----------------=
     last_logw_time = 0.0
     logw_PERIOD = 2.0
     
@@ -236,7 +236,7 @@ def usr(robot):
         vx = v_radial * ur[0] + v_tangential * ut[0]
         vy = v_radial * ur[1] + v_tangential * ut[1]
         
-        # ====== PHASE 4: Fine-tune spacing using neighbor information ======
+        # -----------------= PHASE 4: Fine-tune spacing using neighbor information -----------------=
         # Comment out this entire block if you don't want continuous spacing adjustment
         # Receive current positions for spacing adjustment
         msgs = robot.recv_msg()
