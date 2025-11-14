@@ -1,29 +1,52 @@
+
 # -*- coding: utf-8 -*-
 # Concentric Circle Formation (single ring)
-# Python 2.7 + Coachbot messaging + lab logging pattern
+# Python 2.7 + Coachbot messaging + lab logging pattern + separation
 
 import math, struct
 
 # ----------------- Logging -----------------
-log = None  # global handle
+log = None       # /home/pi/control/experiment_log
+log_out = None   # /home/pi/experiment_output
 
 def logw(msg):
-    """Write to experiment_log (if available) and also print."""
-    global log
+    """Write to experiment_log (lab spec) AND /home/pi/experiment_output for fetch_logs."""
+    global log, log_out
     try:
         s = str(msg)
     except:
         s = repr(msg)
     if not s.endswith("\n"):
         s = s + "\n"
-    # file log
+
+    # 1) standard experiment_log in current dir
+    if log is None:
+        try:
+            log = open("experiment_log", "wb")  # lab requirement
+        except:
+            log = None
     if log is not None:
         try:
             log.write(s)
             log.flush()
         except:
             pass
-    # console (sim / debug)
+
+    # 2) extra file where cctl.fetch_output_handler expects things
+    if log_out is None:
+        try:
+            # absolute path to match scp pi@ip:/home/pi/experiment_output ...
+            log_out = open("/home/pi/experiment_output", "wb")
+        except:
+            log_out = None
+    if log_out is not None:
+        try:
+            log_out.write(s)
+            log_out.flush()
+        except:
+            pass
+
+    # Optional: also print to console (sim)
     try:
         print(s.rstrip("\n"))
     except:
@@ -47,15 +70,19 @@ R_TARGET = SAFE_BUBBLE + 0.33  # Target circle radius
 DIRECTION = 1  # CCW rotation
 
 # ----------------- Drive control -----------------
-MAX_WHEEL = 40
+MAX_WHEEL = 35      # a bit softer than 40
 TURN_K    = 3.0
-FWD_FAST  = 0.8
-FWD_SLOW  = 0.30
+FWD_FAST  = 0.75
+FWD_SLOW  = 0.25
 EPS       = 1e-3
 
 # ----------------- Control gains -----------------
-K_RADIAL  = 1.5    # Gain for radial positioning
-K_ANGULAR = 2.0    # Gain for angular positioning
+K_RADIAL    = 1.5    # Gain for radial positioning
+K_ANGULAR   = 2.0    # Gain for angular positioning
+
+# ----------------- Separation (collision avoidance) -----------------
+MIN_SEP     = 0.18   # minimum desired distance between robots (meters)
+SEP_GAIN    = 0.6    # strength of repulsion
 
 def clamp(v, lo, hi):
     return lo if v < lo else (hi if v > hi else v)
@@ -77,12 +104,12 @@ def get_id(robot):
     """
     Prefer hardware virtual_id(), fall back to sim .id.
     """
-    # Real hardware ID
-    if hasattr(robot, "virtual_id") and callable(robot.virtual_id):
-        try:
-            return int(robot.virtual_id())
-        except:
-            pass
+    # # Real hardware ID
+    # if hasattr(robot, "virtual_id") and callable(robot.virtual_id):
+    #     try:
+    #         return int(robot.virtual_id())
+    #     except:
+    #         pass
     # Simulation ID
     if hasattr(robot, "id"):
         try:
@@ -112,7 +139,7 @@ def soft_boundary_force(x, y, max_force=0.3, boundary_margin=0.08):
     return fx, fy
 
 def usr(robot):
-    global log
+    global log, log_out 
     # ---- open log exactly as lab wants ----
     try:
         log = open("experiment_log", "wb")
@@ -130,7 +157,7 @@ def usr(robot):
     poses = {}  # id -> (x, y)
 
     t_start = robot.get_clock()
-    gossip_duration = 3.0  # seconds to share poses
+    gossip_duration = 6.0  # seconds to share poses
 
     while robot.get_clock() - t_start < gossip_duration:
         pose = safe_pose(robot)
@@ -244,13 +271,13 @@ def usr(robot):
                 ut = (0.0, -1.0)
 
         # Base control: move toward target position
-        v_radial    = K_RADIAL  * radial_error
+        v_radial     = K_RADIAL  * radial_error
         v_tangential = K_ANGULAR * angular_error
         
         vx = v_radial * ur[0] + v_tangential * ut[0]
         vy = v_radial * ur[1] + v_tangential * ut[1]
         
-        # ----------------- PHASE 4: Fine-tune spacing using neighbor information -----------------
+        # ----------------- PHASE 4: Neighbor info for spacing + separation -----------------
         msgs = robot.recv_msg()
         current_neighbors = {}
         if msgs is not None:
@@ -266,7 +293,7 @@ def usr(robot):
                 except:
                     pass
         
-        # If we have neighbor info, adjust spacing
+        # ----- ANGULAR SPACING (same as before) -----
         if len(current_neighbors) > 0 and total_robots > 0:
             neighbor_angles = []
             for nid in current_neighbors:
@@ -288,15 +315,34 @@ def usr(robot):
             
             # Adjust tangential velocity based on spacing
             if min_gap < ideal_gap * 0.7:
-                # Too close to neighbor, slow down
+                # Too close to neighbor, slow down tangentially
                 v_tangential = v_tangential * 0.6
             elif min_gap > ideal_gap * 1.3:
-                # Too far from neighbor, speed up
+                # Too far from neighbor, speed up tangentially
                 v_tangential = v_tangential * 1.4
             
             # Recalculate velocity with spacing adjustment
             vx = v_radial * ur[0] + v_tangential * ut[0]
             vy = v_radial * ur[1] + v_tangential * ut[1]
+
+        # ----- COLLISION AVOIDANCE (new) -----
+        collision_risk = False
+        if len(current_neighbors) > 0:
+            sep_x = 0.0
+            sep_y = 0.0
+            for nid in current_neighbors:
+                nx, ny = current_neighbors[nid]
+                ddx = x - nx
+                ddy = y - ny
+                d = math.hypot(ddx, ddy)
+                if d < MIN_SEP and d > 1e-6:
+                    collision_risk = True
+                    # strength grows as robots get closer
+                    s = SEP_GAIN * (MIN_SEP - d) / MIN_SEP
+                    sep_x += s * (ddx / d)
+                    sep_y += s * (ddy / d)
+            vx += sep_x
+            vy += sep_y
 
         # Add boundary cushion
         bfx, bfy = soft_boundary_force(x, y)
@@ -315,7 +361,9 @@ def usr(robot):
             vx = 0.0
             vy = 0.0
         else:
-            if abs(radial_error) > 0.1:
+            if collision_risk:
+                robot.set_led(255, 120, 0)  # orange when actively separating
+            elif abs(radial_error) > 0.1:
                 robot.set_led(255, 150, 0)  # orange - moving radially
             else:
                 robot.set_led(0, 150, 255)  # blue - adjusting angle
@@ -335,6 +383,10 @@ def usr(robot):
             else:
                 fwd = FWD_SLOW
 
+            # If we are in collision avoidance, be a bit more cautious
+            if collision_risk:
+                fwd = fwd * 0.7
+
             turn = clamp(TURN_K * err, -1.5, 1.5)
 
             left  = clamp(int(MAX_WHEEL * 0.9 * (fwd - 0.8 * turn)), -MAX_WHEEL, MAX_WHEEL)
@@ -344,8 +396,9 @@ def usr(robot):
         # Periodic status
         now = robot.get_clock()
         if now - last_logw_time > logw_PERIOD:
-            logw("Robot %d: pos [%.3f, %.3f], error=%.3f, neighbors=%d"
-                 % (my_id, x, y, position_error, len(current_neighbors)))
+            logw("Robot %d: pos [%.3f, %.3f], err=%.3f, neighbors=%d, collision=%d"
+                 % (my_id, x, y, position_error, len(current_neighbors),
+                    1 if collision_risk else 0))
             last_logw_time = now
 
         robot.delay(40)
