@@ -29043,3 +29043,68 @@ Bot starting with ID: 6
 [velocity_spacing] id=0 neighbors=10 radius_error=-0.005
 [velocity_spacing] id=8 neighbors=10 radius_error=-0.005
 [velocity_spacing] id=1 neighbors=10 radius_error=-0.005
+I am robot -1
+I am robot -1
+I am robot -1
+I am robot -1
+I am robot -1
+I am robot -1
+I am robot -1
+I am robot -1
+I am robot -1
+I am robot -1
+I am robot -1
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: starting center-gather phase
+Robot -1: estimated center (C0x,C0y)=(-0.090, 0.926) from 312 samples
+Robot -1: estimated center (C0x,C0y)=(-0.099, 0.927) from 321 samples
+Robot -1: estimated center (C0x,C0y)=(-0.096, 0.925) from 315 samples
+Robot -1: estimated center (C0x,C0y)=(-0.099, 0.923) from 320 samples
+Robot -1: estimated center (C0x,C0y)=(-0.095, 0.925) from 321 samples
+Robot -1: estimated center (C0x,C0y)=(-0.097, 0.929) from 323 samples
+Robot -1: estimated center (C0x,C0y)=(-0.100, 0.929) from 322 samples
+Robot -1: estimated center (C0x,C0y)=(-0.097, 0.931) from 326 samples
+Robot -1: estimated center (C0x,C0y)=(-0.096, 0.930) from 325 samples
+Robot -1: R=0.670, s_stop=0.487, rate=0.180, center=(-0.090, 0.926)
+Robot -1: R=0.685, s_stop=0.503, rate=0.180, center=(-0.100, 0.929)
+Robot -1: R=0.650, s_stop=0.468, rate=0.180, center=(-0.095, 0.925)
+Robot -1: R=0.688, s_stop=0.505, rate=0.180, center=(-0.099, 0.923)
+Robot -1: R=0.682, s_stop=0.500, rate=0.180, center=(-0.096, 0.930)
+Robot -1: R=0.680, s_stop=0.498, rate=0.180, center=(-0.097, 0.929)
+Robot -1: R=0.666, s_stop=0.483, rate=0.180, center=(-0.096, 0.925)
+Robot -1: R=0.681, s_stop=0.499, rate=0.180, center=(-0.097, 0.931)
+Robot -1: R=0.666, s_stop=0.483, rate=0.180, center=(-0.099, 0.927)
+Robot -1: estimated center (C0x,C0y)=(-0.104, 0.930) from 323 samples
+Robot -1: estimated center (C0x,C0y)=(-0.090, 0.933) from 324 samples
+Robot -1: R=0.710, s_stop=0.528, rate=0.180, center=(-0.104, 0.930)
+Robot -1: R=0.686, s_stop=0.504, rate=0.180, center=(-0.090, 0.933)
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 started ring translation
+Robot -1 completed mission
+Robot -1 finished at [0.418, 0.972] after 20.2s
+Robot -1 completed mission
+Robot -1 finished at [-0.530, 0.891] after 23.3s
+Robot -1 completed mission
+Robot -1 finished at [-0.735, 1.202] after 23.8s
+Robot -1 completed mission
+Robot -1 finished at [0.193, 0.788] after 24.3s
+Robot -1 completed mission
+Robot -1 finished at [0.586, 1.386] after 25.6s

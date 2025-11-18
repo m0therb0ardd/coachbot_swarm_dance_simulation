@@ -6,7 +6,8 @@ import time
 import os 
 
 # ----------------- Logging (sim + hardware) -----------------
-LOG = None   # global log handle
+log = None       # /home/pi/control/experiment_log
+log_out = None   # /home/pi/experiment_output
 
 def init_log():
     """
