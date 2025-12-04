@@ -1,3 +1,10 @@
 __pycache__/
 *.csv
 **/.DS_Store
+# Coachbot hardware + simulation logs
+experiment_log.txt
+*.log
+logs/
+log/
+*.csv
+*.tmp
