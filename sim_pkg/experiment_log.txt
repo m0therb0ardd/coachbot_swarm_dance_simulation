@@ -33704,3 +33704,463 @@ glide_until_wall_global: START vid=6
 glide_until_wall_global: START vid=3
 glide_until_wall_global: START vid=5
 glide_until_wall_global: START vid=12
+rigid_sideways: START vid=7 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=8 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=12 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=4 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=10 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=2 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=11 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=13 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=14 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=6 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=0 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=15 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=5 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=18 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=16 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=1 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=3 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=17 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=19 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=9 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: vid=0 C0=(-0.100,0.475) rel_off=(0.638,0.006) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=4 C0=(-0.100,0.475) rel_off=(-0.637,-0.006) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=2 C0=(-0.100,0.475) rel_off=(-0.006,0.637) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=15 C0=(-0.100,0.475) rel_off=(-0.579,-0.587) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=11 C0=(-0.100,0.475) rel_off=(-0.219,0.796) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=19 C0=(-0.100,0.475) rel_off=(0.798,-0.209) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=8 C0=(-0.100,0.475) rel_off=(0.795,0.219) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=12 C0=(-0.100,0.475) rel_off=(-0.587,0.579) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=6 C0=(-0.100,0.475) rel_off=(0.006,-0.637) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=3 C0=(-0.100,0.475) rel_off=(-0.455,0.447) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=1 C0=(-0.100,0.475) rel_off=(0.447,0.455) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=13 C0=(-0.100,0.475) rel_off=(-0.798,0.209) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=7 C0=(-0.100,0.475) rel_off=(0.455,-0.447) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=14 C0=(-0.100,0.475) rel_off=(-0.796,-0.219) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=10 C0=(-0.100,0.475) rel_off=(0.209,0.798) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=17 C0=(-0.100,0.475) rel_off=(0.219,-0.796) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=18 C0=(-0.100,0.475) rel_off=(0.587,-0.579) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=5 C0=(-0.100,0.475) rel_off=(-0.447,-0.455) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=9 C0=(-0.100,0.475) rel_off=(0.579,0.587) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=16 C0=(-0.100,0.475) rel_off=(-0.209,-0.798) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=0 entering CORRECTION phase
+rigid_sideways: vid=4 entering CORRECTION phase
+rigid_sideways: vid=5 entering CORRECTION phase
+rigid_sideways: vid=15 entering CORRECTION phase
+rigid_sideways: vid=13 entering CORRECTION phase
+rigid_sideways: vid=10 entering CORRECTION phase
+rigid_sideways: vid=11 entering CORRECTION phase
+rigid_sideways: vid=12 entering CORRECTION phase
+rigid_sideways: vid=6 entering CORRECTION phase
+rigid_sideways: vid=2 entering CORRECTION phase
+rigid_sideways: vid=8 entering CORRECTION phase
+rigid_sideways: vid=14 entering CORRECTION phase
+rigid_sideways: vid=17 entering CORRECTION phase
+rigid_sideways: vid=18 entering CORRECTION phase
+rigid_sideways: vid=19 entering CORRECTION phase
+rigid_sideways: vid=1 entering CORRECTION phase
+rigid_sideways: vid=7 entering CORRECTION phase
+rigid_sideways: vid=3 entering CORRECTION phase
+rigid_sideways: vid=9 entering CORRECTION phase
+rigid_sideways: vid=16 entering CORRECTION phase
+rigid_sideways: vid=15 LOCKED pos_err=0.037 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=15
+rigid_sideways: vid=10 LOCKED pos_err=0.027 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=10
+rigid_sideways: vid=11 LOCKED pos_err=0.031 v_est=0.007 (time_done=True)
+rigid_sideways: vid=18 LOCKED pos_err=0.021 v_est=0.007 (time_done=True)
+rigid_sideways: vid=4 LOCKED pos_err=0.050 v_est=0.012 (time_done=True)
+rigid_sideways: vid=19 LOCKED pos_err=0.016 v_est=0.006 (time_done=True)
+rigid_sideways: FINISH vid=11
+rigid_sideways: vid=6 LOCKED pos_err=0.029 v_est=0.006 (time_done=True)
+rigid_sideways: FINISH vid=18
+rigid_sideways: FINISH vid=19
+rigid_sideways: FINISH vid=4
+rigid_sideways: FINISH vid=6
+rigid_sideways: vid=8 LOCKED pos_err=0.017 v_est=0.004 (time_done=True)
+rigid_sideways: vid=2 LOCKED pos_err=0.028 v_est=0.008 (time_done=True)
+rigid_sideways: vid=17 LOCKED pos_err=0.027 v_est=0.006 (time_done=True)
+rigid_sideways: FINISH vid=8
+rigid_sideways: vid=5 LOCKED pos_err=0.037 v_est=0.012 (time_done=True)
+rigid_sideways: FINISH vid=17
+rigid_sideways: vid=14 LOCKED pos_err=0.046 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=2
+rigid_sideways: vid=12 LOCKED pos_err=0.038 v_est=0.005 (time_done=True)
+rigid_sideways: vid=13 LOCKED pos_err=0.046 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=5
+rigid_sideways: FINISH vid=14
+rigid_sideways: vid=0 LOCKED pos_err=0.019 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=12
+rigid_sideways: FINISH vid=13
+rigid_sideways: FINISH vid=0
+rigid_sideways: vid=7 LOCKED pos_err=0.021 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=7
+rigid_sideways: vid=3 LOCKED pos_err=0.038 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=3
+rigid_sideways: vid=1 LOCKED pos_err=0.021 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=1
+rigid_sideways: vid=9 LOCKED pos_err=0.021 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=9
+rigid_sideways: vid=16 LOCKED pos_err=0.031 v_est=0.009 (time_done=True)
+rigid_sideways: FINISH vid=16
+rigid_sideways: START vid=15 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=0 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=9 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=10 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=2 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=19 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=7 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=17 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=12 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=4 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=14 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=3 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=8 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=6 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=11 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=5 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=1 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=18 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=13 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=16 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: vid=1 C0=(-0.100,0.475) rel_off=(0.447,0.455) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=16 C0=(-0.100,0.475) rel_off=(-0.209,-0.798) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=18 C0=(-0.100,0.475) rel_off=(0.587,-0.579) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=5 C0=(-0.100,0.475) rel_off=(-0.447,-0.455) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=14 C0=(-0.100,0.475) rel_off=(-0.796,-0.219) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=4 C0=(-0.100,0.475) rel_off=(-0.637,-0.005) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=6 C0=(-0.100,0.475) rel_off=(0.005,-0.637) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=12 C0=(-0.100,0.475) rel_off=(-0.587,0.579) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=13 C0=(-0.100,0.475) rel_off=(-0.798,0.209) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=3 C0=(-0.100,0.475) rel_off=(-0.455,0.447) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=17 C0=(-0.100,0.475) rel_off=(0.219,-0.796) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=10 C0=(-0.100,0.475) rel_off=(0.209,0.798) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=19 C0=(-0.100,0.475) rel_off=(0.798,-0.209) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=0 C0=(-0.100,0.475) rel_off=(0.638,0.005) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=11 C0=(-0.100,0.475) rel_off=(-0.219,0.796) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=7 C0=(-0.100,0.475) rel_off=(0.455,-0.447) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=8 C0=(-0.100,0.475) rel_off=(0.796,0.219) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=2 C0=(-0.100,0.475) rel_off=(-0.005,0.637) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=9 C0=(-0.100,0.475) rel_off=(0.579,0.587) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=15 C0=(-0.100,0.475) rel_off=(-0.579,-0.587) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=16 entering CORRECTION phase
+rigid_sideways: vid=10 entering CORRECTION phase
+rigid_sideways: vid=15 entering CORRECTION phase
+rigid_sideways: vid=6 entering CORRECTION phase
+rigid_sideways: vid=17 entering CORRECTION phase
+rigid_sideways: vid=2 entering CORRECTION phase
+rigid_sideways: vid=13 entering CORRECTION phase
+rigid_sideways: vid=7 entering CORRECTION phase
+rigid_sideways: vid=4 entering CORRECTION phase
+rigid_sideways: vid=8 entering CORRECTION phase
+rigid_sideways: vid=9 entering CORRECTION phase
+rigid_sideways: vid=19 entering CORRECTION phase
+rigid_sideways: vid=0 entering CORRECTION phase
+rigid_sideways: vid=18 entering CORRECTION phase
+rigid_sideways: vid=12 entering CORRECTION phase
+rigid_sideways: vid=3 entering CORRECTION phase
+rigid_sideways: vid=14 entering CORRECTION phase
+rigid_sideways: vid=5 entering CORRECTION phase
+rigid_sideways: vid=11 entering CORRECTION phase
+rigid_sideways: vid=1 entering CORRECTION phase
+rigid_sideways: vid=8 LOCKED pos_err=0.017 v_est=0.005 (time_done=True)
+rigid_sideways: vid=13 LOCKED pos_err=0.046 v_est=0.011 (time_done=True)
+rigid_sideways: vid=15 LOCKED pos_err=0.038 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=8
+rigid_sideways: vid=6 LOCKED pos_err=0.029 v_est=0.005 (time_done=True)
+rigid_sideways: vid=16 LOCKED pos_err=0.032 v_est=0.007 (time_done=True)
+rigid_sideways: vid=2 LOCKED pos_err=0.029 v_est=0.005 (time_done=True)
+rigid_sideways: vid=10 LOCKED pos_err=0.027 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=15
+rigid_sideways: FINISH vid=6
+rigid_sideways: vid=17 LOCKED pos_err=0.027 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=13
+rigid_sideways: FINISH vid=17
+rigid_sideways: FINISH vid=16
+rigid_sideways: FINISH vid=10
+rigid_sideways: FINISH vid=2
+rigid_sideways: vid=9 LOCKED pos_err=0.021 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=9
+rigid_sideways: vid=18 LOCKED pos_err=0.021 v_est=0.004 (time_done=True)
+rigid_sideways: vid=14 LOCKED pos_err=0.045 v_est=0.007 (time_done=True)
+rigid_sideways: vid=19 LOCKED pos_err=0.017 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=18
+rigid_sideways: FINISH vid=14
+rigid_sideways: FINISH vid=19
+rigid_sideways: vid=3 LOCKED pos_err=0.037 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=3
+rigid_sideways: vid=11 LOCKED pos_err=0.031 v_est=0.004 (time_done=True)
+rigid_sideways: vid=1 LOCKED pos_err=0.021 v_est=0.003 (time_done=True)
+rigid_sideways: FINISH vid=11
+rigid_sideways: FINISH vid=1
+rigid_sideways: vid=0 LOCKED pos_err=0.019 v_est=0.003 (time_done=True)
+rigid_sideways: FINISH vid=0
+rigid_sideways: vid=12 LOCKED pos_err=0.037 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=12
+rigid_sideways: vid=4 LOCKED pos_err=0.050 v_est=0.006 (time_done=True)
+rigid_sideways: FINISH vid=4
+rigid_sideways: vid=7 LOCKED pos_err=0.021 v_est=0.006 (time_done=True)
+rigid_sideways: vid=5 LOCKED pos_err=0.037 v_est=0.008 (time_done=True)
+rigid_sideways: FINISH vid=7
+rigid_sideways: FINISH vid=5
+rigid_sideways: START vid=15 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=16 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=1 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=17 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=19 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=4 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=2 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=9 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=14 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=11 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=0 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=3 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=13 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=12 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=8 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=7 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=10 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=18 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=6 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: START vid=5 MOVE_DIR=1 MOVE_DIST=0.350
+rigid_sideways: vid=14 C0=(-0.100,0.475) rel_off=(-0.796,-0.219) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=2 C0=(-0.100,0.475) rel_off=(-0.006,0.637) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=15 C0=(-0.100,0.475) rel_off=(-0.579,-0.587) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=11 C0=(-0.100,0.475) rel_off=(-0.219,0.796) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=1 C0=(-0.100,0.475) rel_off=(0.447,0.455) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=16 C0=(-0.100,0.475) rel_off=(-0.209,-0.798) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=13 C0=(-0.100,0.475) rel_off=(-0.798,0.209) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=7 C0=(-0.100,0.475) rel_off=(0.455,-0.447) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=6 C0=(-0.100,0.475) rel_off=(0.005,-0.637) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=0 C0=(-0.100,0.475) rel_off=(0.638,0.006) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=18 C0=(-0.100,0.475) rel_off=(0.587,-0.579) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=4 C0=(-0.100,0.475) rel_off=(-0.637,-0.006) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=8 C0=(-0.100,0.475) rel_off=(0.796,0.219) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=9 C0=(-0.100,0.475) rel_off=(0.579,0.587) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=17 C0=(-0.100,0.475) rel_off=(0.219,-0.796) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=10 C0=(-0.100,0.475) rel_off=(0.209,0.798) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=12 C0=(-0.100,0.475) rel_off=(-0.587,0.579) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=3 C0=(-0.100,0.475) rel_off=(-0.455,0.447) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=5 C0=(-0.100,0.475) rel_off=(-0.447,-0.455) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=19 C0=(-0.100,0.475) rel_off=(0.798,-0.209) Cfinal=(-0.100,0.825)
+rigid_sideways: vid=2 entering CORRECTION phase
+rigid_sideways: vid=1 entering CORRECTION phase
+rigid_sideways: vid=14 entering CORRECTION phase
+rigid_sideways: vid=7 entering CORRECTION phase
+rigid_sideways: vid=15 entering CORRECTION phase
+rigid_sideways: vid=11 entering CORRECTION phase
+rigid_sideways: vid=13 entering CORRECTION phase
+rigid_sideways: vid=6 entering CORRECTION phase
+rigid_sideways: vid=16 entering CORRECTION phase
+rigid_sideways: vid=8 entering CORRECTION phase
+rigid_sideways: vid=10 entering CORRECTION phase
+rigid_sideways: vid=17 entering CORRECTION phase
+rigid_sideways: vid=0 entering CORRECTION phase
+rigid_sideways: vid=4 entering CORRECTION phase
+rigid_sideways: vid=9 entering CORRECTION phase
+rigid_sideways: vid=18 entering CORRECTION phase
+rigid_sideways: vid=12 entering CORRECTION phase
+rigid_sideways: vid=19 entering CORRECTION phase
+rigid_sideways: vid=5 entering CORRECTION phase
+rigid_sideways: vid=3 entering CORRECTION phase
+rigid_sideways: vid=15 LOCKED pos_err=0.039 v_est=0.006 (time_done=True)
+rigid_sideways: FINISH vid=15
+rigid_sideways: vid=2 LOCKED pos_err=0.030 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=2
+rigid_sideways: vid=7 LOCKED pos_err=0.022 v_est=0.004 (time_done=True)
+rigid_sideways: vid=1 LOCKED pos_err=0.022 v_est=0.005 (time_done=True)
+rigid_sideways: vid=14 LOCKED pos_err=0.046 v_est=0.009 (time_done=True)
+rigid_sideways: FINISH vid=7
+rigid_sideways: FINISH vid=1
+rigid_sideways: FINISH vid=14
+rigid_sideways: vid=13 LOCKED pos_err=0.046 v_est=0.017 (time_done=True)
+rigid_sideways: vid=17 LOCKED pos_err=0.026 v_est=0.008 (time_done=True)
+rigid_sideways: vid=11 LOCKED pos_err=0.032 v_est=0.011 (time_done=True)
+rigid_sideways: FINISH vid=17
+rigid_sideways: FINISH vid=13
+rigid_sideways: FINISH vid=11
+rigid_sideways: vid=6 LOCKED pos_err=0.029 v_est=0.008 (time_done=True)
+rigid_sideways: vid=8 LOCKED pos_err=0.017 v_est=0.005 (time_done=True)
+rigid_sideways: vid=16 LOCKED pos_err=0.031 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=6
+rigid_sideways: FINISH vid=8
+rigid_sideways: FINISH vid=16
+rigid_sideways: vid=12 LOCKED pos_err=0.038 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=12
+rigid_sideways: vid=4 LOCKED pos_err=0.050 v_est=0.010 (time_done=True)
+rigid_sideways: FINISH vid=4
+rigid_sideways: vid=0 LOCKED pos_err=0.019 v_est=0.009 (time_done=True)
+rigid_sideways: vid=10 LOCKED pos_err=0.027 v_est=0.009 (time_done=True)
+rigid_sideways: FINISH vid=0
+rigid_sideways: FINISH vid=10
+rigid_sideways: vid=18 LOCKED pos_err=0.021 v_est=0.005 (time_done=True)
+rigid_sideways: vid=9 LOCKED pos_err=0.021 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=18
+rigid_sideways: FINISH vid=9
+rigid_sideways: vid=5 LOCKED pos_err=0.037 v_est=0.007 (time_done=True)
+rigid_sideways: vid=19 LOCKED pos_err=0.017 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=5
+rigid_sideways: FINISH vid=19
+rigid_sideways: vid=3 LOCKED pos_err=0.036 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=3
+rigid_sideways: START vid=10 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=13 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=8 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=1 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=16 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=6 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=9 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=14 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=15 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=17 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=3 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=18 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=0 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=11 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=2 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=5 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=12 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=7 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=19 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: START vid=4 MOVE_DIR=-1 MOVE_DIST=0.350
+rigid_sideways: vid=13 C0=(-0.100,0.475) rel_off=(-0.798,0.209) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=6 C0=(-0.100,0.475) rel_off=(0.005,-0.637) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=5 C0=(-0.100,0.475) rel_off=(-0.447,-0.455) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=17 C0=(-0.100,0.475) rel_off=(0.219,-0.796) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=10 C0=(-0.100,0.475) rel_off=(0.209,0.798) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=7 C0=(-0.100,0.475) rel_off=(0.455,-0.447) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=2 C0=(-0.100,0.475) rel_off=(-0.005,0.637) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=14 C0=(-0.100,0.475) rel_off=(-0.796,-0.219) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=16 C0=(-0.100,0.475) rel_off=(-0.209,-0.798) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=18 C0=(-0.100,0.475) rel_off=(0.587,-0.579) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=11 C0=(-0.100,0.475) rel_off=(-0.219,0.796) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=1 C0=(-0.100,0.475) rel_off=(0.447,0.455) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=19 C0=(-0.100,0.475) rel_off=(0.798,-0.209) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=8 C0=(-0.100,0.475) rel_off=(0.796,0.219) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=3 C0=(-0.100,0.475) rel_off=(-0.455,0.447) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=12 C0=(-0.100,0.475) rel_off=(-0.587,0.579) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=15 C0=(-0.100,0.475) rel_off=(-0.579,-0.587) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=4 C0=(-0.100,0.475) rel_off=(-0.637,-0.005) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=9 C0=(-0.100,0.475) rel_off=(0.579,0.587) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=0 C0=(-0.100,0.475) rel_off=(0.638,0.005) Cfinal=(-0.100,0.125)
+rigid_sideways: vid=10 entering CORRECTION phase
+rigid_sideways: vid=14 entering CORRECTION phase
+rigid_sideways: vid=17 entering CORRECTION phase
+rigid_sideways: vid=13 entering CORRECTION phase
+rigid_sideways: vid=7 entering CORRECTION phase
+rigid_sideways: vid=5 entering CORRECTION phase
+rigid_sideways: vid=2 entering CORRECTION phase
+rigid_sideways: vid=16 entering CORRECTION phase
+rigid_sideways: vid=6 entering CORRECTION phase
+rigid_sideways: vid=1 entering CORRECTION phase
+rigid_sideways: vid=8 entering CORRECTION phase
+rigid_sideways: vid=3 entering CORRECTION phase
+rigid_sideways: vid=19 entering CORRECTION phase
+rigid_sideways: vid=18 entering CORRECTION phase
+rigid_sideways: vid=4 entering CORRECTION phase
+rigid_sideways: vid=12 entering CORRECTION phase
+rigid_sideways: vid=11 entering CORRECTION phase
+rigid_sideways: vid=15 entering CORRECTION phase
+rigid_sideways: vid=9 entering CORRECTION phase
+rigid_sideways: vid=0 entering CORRECTION phase
+rigid_sideways: vid=10 LOCKED pos_err=0.032 v_est=0.004 (time_done=True)
+rigid_sideways: vid=2 LOCKED pos_err=0.029 v_est=0.004 (time_done=True)
+rigid_sideways: vid=14 LOCKED pos_err=0.018 v_est=0.004 (time_done=True)
+rigid_sideways: vid=5 LOCKED pos_err=0.022 v_est=0.004 (time_done=True)
+rigid_sideways: vid=13 LOCKED pos_err=0.018 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=2
+rigid_sideways: FINISH vid=10
+rigid_sideways: vid=7 LOCKED pos_err=0.038 v_est=0.006 (time_done=True)
+rigid_sideways: vid=6 LOCKED pos_err=0.029 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=5
+rigid_sideways: vid=16 LOCKED pos_err=0.027 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=13
+rigid_sideways: FINISH vid=14
+rigid_sideways: FINISH vid=6
+rigid_sideways: FINISH vid=7
+rigid_sideways: FINISH vid=16
+rigid_sideways: vid=17 LOCKED pos_err=0.032 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=17
+rigid_sideways: vid=1 LOCKED pos_err=0.038 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=1
+rigid_sideways: vid=4 LOCKED pos_err=0.020 v_est=0.005 (time_done=True)
+rigid_sideways: vid=9 LOCKED pos_err=0.038 v_est=0.007 (time_done=True)
+rigid_sideways: FINISH vid=4
+rigid_sideways: FINISH vid=9
+rigid_sideways: vid=18 LOCKED pos_err=0.038 v_est=0.005 (time_done=True)
+rigid_sideways: FINISH vid=18
+rigid_sideways: vid=11 LOCKED pos_err=0.027 v_est=0.004 (time_done=True)
+rigid_sideways: FINISH vid=11
+rigid_sideways: vid=12 LOCKED pos_err=0.022 v_est=0.008 (time_done=True)
+rigid_sideways: vid=3 LOCKED pos_err=0.022 v_est=0.008 (time_done=True)
+rigid_sideways: FINISH vid=12
+rigid_sideways: vid=19 LOCKED pos_err=0.046 v_est=0.015 (time_done=True)
+rigid_sideways: FINISH vid=3
+rigid_sideways: FINISH vid=19
+rigid_sideways: vid=15 LOCKED pos_err=0.022 v_est=0.005 (time_done=True)
+rigid_sideways: vid=8 LOCKED pos_err=0.046 v_est=0.010 (time_done=True)
+rigid_sideways: FINISH vid=15
+rigid_sideways: FINISH vid=8
+rigid_sideways: vid=0 LOCKED pos_err=0.050 v_est=0.009 (time_done=True)
+rigid_sideways: FINISH vid=0
+glide_until_wall_global: START vid=2
+glide_until_wall_global: START vid=0
+glide_until_wall_global: START vid=9
+glide_until_wall_global: START vid=17
+glide_until_wall_global: START vid=3
+glide_until_wall_global: START vid=12
+glide_until_wall_global: START vid=8
+glide_until_wall_global: START vid=14
+glide_until_wall_global: START vid=1
+glide_until_wall_global: START vid=18
+glide_until_wall_global: START vid=11
+glide_until_wall_global: START vid=15
+glide_until_wall_global: START vid=16
+glide_until_wall_global: START vid=5
+glide_until_wall_global: START vid=10
+glide_until_wall_global: START vid=7
+glide_until_wall_global: START vid=19
+glide_until_wall_global: START vid=6
+glide_until_wall_global: START vid=4
+glide_until_wall_global: START vid=13
+GLIDE_PHASE: vid=7 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=2 RECEIVED STOP_NOW
+glide_until_wall_global: FINISH vid=7
+GLIDE_PHASE: vid=11 RECEIVED STOP_NOW
+glide_until_wall_global: FINISH vid=2
+GLIDE_PHASE: vid=6 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=3 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=9 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=5 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=8 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=1 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=14 RECEIVED STOP_NOW
+glide_until_wall_global: FINISH vid=11
+GLIDE_PHASE: vid=16 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=19 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=17 RECEIVED STOP_NOW
+glide_until_wall_global: FINISH vid=3
+glide_until_wall_global: FINISH vid=6
+glide_until_wall_global: FINISH vid=9
+glide_until_wall_global: FINISH vid=8
+glide_until_wall_global: FINISH vid=14
+GLIDE_PHASE: vid=4 RECEIVED STOP_NOW
+glide_until_wall_global: FINISH vid=5
+GLIDE_PHASE: vid=0 RECEIVED STOP_NOW
+glide_until_wall_global: FINISH vid=17
+glide_until_wall_global: FINISH vid=1
+glide_until_wall_global: FINISH vid=16
+glide_until_wall_global: FINISH vid=19
+GLIDE_PHASE: vid=12 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=15 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=13 RECEIVED STOP_NOW
+GLIDE_PHASE: vid=18 RECEIVED STOP_NOW
+glide_until_wall_global: FINISH vid=0
+glide_until_wall_global: FINISH vid=4
+glide_until_wall_global: FINISH vid=12
+glide_until_wall_global: FINISH vid=15
+glide_until_wall_global: FINISH vid=13
+glide_until_wall_global: FINISH vid=18
+GLIDE_SOFT: vid=10 BROADCAST STOP_NOW
+glide_until_wall_global: FINISH vid=10

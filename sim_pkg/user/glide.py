@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # GLIDE CONTINUOUS (rigid ring + medium wave) UNTIL WALL
 # GLOBAL STOP:
@@ -15,13 +16,13 @@ import os
 X_MIN, X_MAX = -1.2, 1.0
 Y_MIN, Y_MAX = -1.4, 2.35
 
-# ----------------- Wave & motion -----------------
+# ----------------- Wave motion -----------------
 UPWARD_SPEED = 0.035   # m/s upward drift
 WAVE_AMP     = 0.13    # base lateral amplitude
-WAVE_FREQ    = 0.12    # Hz
+WAVE_FREQ    = 0.05    # Hz
 
 # Option 1: BIG lateral swing of the COM
-BIG_WAVE_MULT = 3.0    # try 3.0, can raise to 4.0–5.0 if you want even more
+BIG_WAVE_MULT = 2.0    # try 3.0, can raise to 4.0 5.0 if you want even more
 
 DT_MS     = 40
 MAX_WHEEL = 35

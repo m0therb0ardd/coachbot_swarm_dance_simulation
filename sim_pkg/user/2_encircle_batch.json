@@ -1,7 +1,7 @@
 {
     "NUM_RUNS": 1,
-    "DEFAULT_USER": "encircle_with_csv.py",
-    "DEFAULT_INIT": "init_pose_two_rings.csv",
+    "DEFAULT_USER": "2_encircle.py",
+    "DEFAULT_INIT": "init_pose_after_jitter.csv",
     "DEFAULT_CONFIG": "config.json",
     "DEFAULT_TRIALS": 1
   }
