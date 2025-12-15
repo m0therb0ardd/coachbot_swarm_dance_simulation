@@ -10,7 +10,7 @@ Y_MIN, Y_MAX = -1.4, 2.35
 
 # ----------------- Motion parameters -----------------
 
-MOVE_DIR      = -1          
+MOVE_DIR      = 1          
 MOVE_DIST     = 0.35        
 MOVE_DURATION = 8.0       
 

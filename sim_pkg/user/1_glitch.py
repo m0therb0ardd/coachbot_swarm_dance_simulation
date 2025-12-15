@@ -1,5 +1,4 @@
 
-
 # -*- coding: utf-8 -*-
 # GLITCH 3.0 chaotic bursts + flicker + twitch
 # FINAL STATE = perfectly expanded ring (same outward shift for all)
@@ -87,14 +86,6 @@ def usr(robot):
             robot.set_vel(0,0); robot.delay(40); continue
 
         x,y,th = pose
-
-        # >>> NEW: print live bot position to terminal <<<
-        try:
-            print("Bot {} @ x={:.3f}, y={:.3f}, th={:.3f}".format(
-                robot.id, x, y, th))
-        except:
-            print("Bot", robot.id, "@", x, y, th)
-        # >>> END NEW <<<
         now = robot.get_clock()
 
         # ---------------- boundary kill ----------------
