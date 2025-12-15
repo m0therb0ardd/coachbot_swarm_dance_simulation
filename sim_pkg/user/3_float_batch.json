@@ -1,8 +1,0 @@
-{
-    "NUM_RUNS": 1,
-    "DEFAULT_USER": "3_float.py",
-    "DEFAULT_INIT": "init_pose_two_rings.csv",
-    "DEFAULT_CONFIG": "config.json",
-    "DEFAULT_TRIALS": 1
-  }
-  

@@ -12,3 +12,36 @@ These scripts are designed for:
 The CoachBot Simulator, for testing and visualizing swarm behaviors
 The physical CoachBot testbed, for live performance and embodied interaction
 Together, they form a choreography engine that supports both experimental development and real-time performance with human collaborators.
+
+## Brief Overview
+
+This repository contains swarm choreography scripts developed for the CoachBot platform and CoachBot Simulator.
+
+- `00_move_to_circle.py`  
+  Moves all designated robots into an evenly spaced circular ring used as the starting formation.
+
+- `0_directional_left.py`, `0_directional_right.py`  
+  Simple directional motion behaviors used for legible, gesture-driven control.
+
+- `1_glitch.py`  
+  A disruption-based swarm behavior associated with the “hands up” gesture.
+
+- `2_encircle.py`  
+  Encircling behavior in which robots orbit a shared center.
+
+- `3_glide.py`  
+  Light, sustained swarm motion corresponding to the *glide* gesture.
+
+- `4_punch.py`  
+  Sharp, direct, high-energy swarm response.
+
+- `5_float.py`  
+  Slow, indirect, buoyant swarm motion.
+
+- `6_slash.py`  
+  Fast, indirect, and forceful swarm behavior.
+
+This repository is a clone of the Northwestern CoachBot Simulator, based on the original simulation framework and documentation  
+(https://github.com/michelleezhang/swarm-simulator) and the accompanying README  
+(https://github.com/m0therb0ardd/coachbot_swarm_dance_simulation/blob/main/README1.md).  
+All custom work lives in `sim_pkg/user/`, where the swarm algorithms are implemented and tested in simulation before deployment to physical CoachBots.
